@@ -1,4 +1,4 @@
-# JsonSchemApi
+# JsonSchemaApi
 
 Create an json api endpoint using json-scehema for request validation.
 

@@ -10,13 +10,13 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
+use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Exception\ApiException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
 use Usox\JsonSchemaApi\Exception\InternalException;
 use Usox\JsonSchemaApi\Input\InputValidator;
 use Usox\JsonSchemaApi\Input\InputValidatorInterface;
 use JsonSchema\Validator;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Teapot\StatusCode;
 use Throwable;
@@ -115,7 +115,7 @@ final class Endpoint
     
     public static function factory(
         StreamFactoryInterface $streamFactory,
-        ContainerInterface $container,
+        MethodProviderInterface $methodProvider,
         ?LoggerInterface $logger = null
     ): Endpoint {
         $schemaValidator = new Validator();
@@ -124,7 +124,7 @@ final class Endpoint
             new InputValidator($schemaValidator),
             new MethodRetriever(
                 new MethodValidator($schemaValidator),
-                $container
+                $methodProvider
             ),
             new ResponseBuilder(),
             new UuidFactory(),

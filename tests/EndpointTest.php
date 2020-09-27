@@ -8,7 +8,6 @@ use Exception;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -19,6 +18,7 @@ use Ramsey\Uuid\UuidInterface;
 use stdClass;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
+use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Exception\ApiException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
 use Usox\JsonSchemaApi\Input\InputValidatorInterface;
@@ -267,7 +267,7 @@ class EndpointTest extends MockeryTestCase
             Endpoint::class,
             Endpoint::factory(
                 Mockery::mock(StreamFactoryInterface::class),
-                Mockery::mock(ContainerInterface::class)
+                Mockery::mock(MethodProviderInterface::class)
             )
         );
     }

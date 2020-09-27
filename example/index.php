@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\StreamFactory;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
+use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Endpoint;
-use Psr\Container\ContainerInterface;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -38,7 +38,7 @@ final class BeerlistMethod implements ApiMethodInterface
         return __DIR__ . '/schema/beerlist.json';
     }
 }
-$methodContainer = new class implements ContainerInterface {
+$methodContainer = new class implements MethodProviderInterface {
 
     private array $methods;
 
@@ -49,14 +49,9 @@ $methodContainer = new class implements ContainerInterface {
         ];
     }
 
-    public function get($id)
+    public function lookup(string $methodName): ?ApiMethodInterface
     {
-        return $this->methods[$id];
-    }
-
-    public function has($id)
-    {
-        return array_key_exists($id, $this->methods);
+        return $this->methods[$methodName] ?? null;
     }
 };
 
