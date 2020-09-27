@@ -8,6 +8,7 @@ use stdClass;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
+use Usox\JsonSchemaApi\Exception\InternalException;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 
 final class MethodRetriever implements MethodRetrieverInterface
@@ -26,6 +27,7 @@ final class MethodRetriever implements MethodRetrieverInterface
 
     /**
      * @throws MethodNotFoundException
+     * @throws InternalException
      */
     public function retrieve(
         stdClass $input

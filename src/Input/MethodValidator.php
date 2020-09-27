@@ -25,7 +25,7 @@ final class MethodValidator implements MethodValidatorInterface
     /**
      * @throws RequestValidationException
      * @throws SchemaNotFoundException
-     * @throws SchemaNotFoundException
+     * @throws SchemaInvalidException
      */
     public function validate(
         ApiMethodInterface $handler,
