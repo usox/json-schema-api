@@ -12,8 +12,7 @@ final class ResponseBuilder implements ResponseBuilderInterface
     public function buildErrorResponse(
         Throwable $e,
         UuidInterface $uuid
-    ): array
-    {
+    ): array {
         return [
             'error' => [
                 'message' => $e->getMessage(),

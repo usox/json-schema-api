@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Exception;
 
-use Exception;
-
-abstract class ApiException extends InternalException 
+final class SchemaNotFoundException extends InternalException
 {
+
 }

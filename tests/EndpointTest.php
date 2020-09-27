@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi;
 
+use Exception;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
@@ -224,7 +225,7 @@ class EndpointTest extends MockeryTestCase
         $errorCode = 666;
         $uuidValue = 'some-uuid';
 
-        $error = new \Exception($errorMessage, $errorCode);
+        $error = new Exception($errorMessage, $errorCode);
 
         $this->inputValidator->shouldReceive('validate')
             ->with($request)

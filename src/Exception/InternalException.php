@@ -6,6 +6,7 @@ namespace Usox\JsonSchemaApi\Exception;
 
 use Exception;
 
-abstract class ApiException extends InternalException 
+abstract class InternalException extends Exception
 {
+
 }

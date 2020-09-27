@@ -28,6 +28,7 @@
   },
   "require-dev": {
     "laminas/laminas-diactoros": "^2.4",
+    "mikey179/vfsstream": "^1.6",
     "mockery/mockery": "^1.4",
     "phpunit/phpunit": "^9.3"
   },
