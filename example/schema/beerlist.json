@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "some-method.json",
+  "title": "Some method",
+  "description": "Some method to do something",
+  "type": "object",
+  "properties": {
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "test1": {
+          "type": "string"
+        },
+        "test2": {
+          "type": "integer"
+        }
+      },
+      "required": ["test1", "test2"]
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "beer_style_list": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

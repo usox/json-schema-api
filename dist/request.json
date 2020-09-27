@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "request.json",
+  "title": "Basic message",
+  "description": "Represents the basic message",
+  "type": "object",
+  "properties": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "parameter": {
+          "type": "object"
+        },
+        "version": {
+          "type": ["integer", "null"]
+        }
+      }
+    }
+  },
+  "required": ["method", "parameter", "version"]
+}
