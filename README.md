@@ -89,5 +89,3 @@ Now you can send `POST`-Requests to the api like this curl-request.
 ```shell script
 curl -X POST -d '{"method": "beerlist", "version": null, "parameter": {"test1": "foobar", "test2": 666}}' "http://localhost:8888"
 ```
-
-``
