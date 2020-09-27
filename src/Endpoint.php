@@ -100,18 +100,16 @@ final class Endpoint
         Throwable $e,
         UuidInterface $uuid
     ): void {
-        if ($this->logger === null) {
-            return;
+        if ($this->logger !== null) {
+            $this->logger->error(
+                sprintf('%s (%d)', $e->getMessage(), $e->getCode()),
+                [
+                    'id' => $uuid->toString(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
         }
-        
-        $this->logger->error(
-            sprintf('%s (%d)', $e->getMessage(), $e->getCode()),
-            [
-                'id' => $uuid->toString(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]
-        );
     }
     
     public static function factory(

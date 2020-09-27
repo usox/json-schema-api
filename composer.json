@@ -1,27 +1,40 @@
 {
-    "name": "usox/json-schema-api",
-    "require": {
-        "justinrainbow/json-schema": "^5.2",
-        "ext-json": "*",
-        "shrikeh/teapot": "^2.3",
-        "psr/container": "^1.0",
-        "psr/log": "^1.1",
-        "ramsey/uuid": "^4.1",
-        "psr/http-message": "^1.0",
-        "psr/http-factory": "^1.0"
-    },
-    "authors": [
-        {
-            "name": "Daniel Jakob",
-            "email": "github@usox.org"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Usox\\JsonSchemaApi\\": "src/"
-        }
-    },
-    "require-dev": {
-        "laminas/laminas-diactoros": "^2.4"
+  "name": "usox/json-schema-api",
+  "require": {
+    "ext-json": "*",
+    "justinrainbow/json-schema": "^5.2",
+    "psr/container": "^1.0",
+    "psr/http-factory": "^1.0",
+    "psr/http-message": "^1.0",
+    "psr/log": "^1.1",
+    "ramsey/uuid": "^4.1",
+    "shrikeh/teapot": "^2.3"
+  },
+  "authors": [
+    {
+      "name": "Daniel Jakob",
+      "email": "github@usox.org"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Usox\\JsonSchemaApi\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Usox\\JsonSchemaApi\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "laminas/laminas-diactoros": "^2.4",
+    "mockery/mockery": "^1.4",
+    "phpunit/phpunit": "^9.3"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "scripts": {
+    "tests": "./vendor/bin/phpunit tests"
+  }
 }
