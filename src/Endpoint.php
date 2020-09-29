@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi;
 
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
@@ -26,7 +28,8 @@ use Usox\JsonSchemaApi\Input\MethodValidator;
 use Usox\JsonSchemaApi\Response\ResponseBuilder;
 use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
-final class Endpoint
+final class Endpoint implements 
+    MiddlewareInterface
 {
     private InputValidatorInterface $inputValidator;
 
@@ -57,7 +60,7 @@ final class Endpoint
     }
 
     public function serve(
-        RequestInterface $request,
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
         $statusCode = StatusCode::OK;
@@ -69,7 +72,7 @@ final class Endpoint
 
             // Process and build the response
             $responseData = $this->responseBuilder->buildResponse(
-                $handler->handle($decodedInput->parameter)
+                $handler->handle($request, $decodedInput->parameter)
             );
         } catch (ApiMethodException | ApiException $e) {
             $uuid = $this->uuidFactory->uuid4();
@@ -131,5 +134,14 @@ final class Endpoint
             $streamFactory,
             $logger
         );
+    }
+
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
+        $response = $handler->handle($request);
+        
+        return $this->serve($request, $response);
     }
 }

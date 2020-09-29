@@ -8,7 +8,7 @@ use JsonSchema\Validator;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Exception\JsonInvalidException;
@@ -38,7 +38,7 @@ class InputValidatorTest extends MockeryTestCase
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
         
         $stream = Mockery::mock(StreamInterface::class);
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
         
         $input = 'some-input' . PHP_EOL . 'errors';
         
@@ -62,7 +62,7 @@ class InputValidatorTest extends MockeryTestCase
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
 
         $stream = Mockery::mock(StreamInterface::class);
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
 
         $input = ['some' => 'input'];
         $schemaContent = json_decode(
@@ -97,7 +97,7 @@ class InputValidatorTest extends MockeryTestCase
     public function testValidateReturnsValidatedInput(): void
     {
         $stream = Mockery::mock(StreamInterface::class);
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
 
         $input = ['some' => 'input'];
         $schemaContent = json_decode(

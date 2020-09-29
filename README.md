@@ -25,7 +25,6 @@ composer require usox/json-schema-api
 
 ## Usage
 
-
 Get your psr7/17 implementations and youe method-provider (see below) ready and just call the `factory`-method on the endpoint to retrieve an working instance:
 
 ```php
@@ -38,6 +37,10 @@ $endpoint->serve(
     $psr7Response
 );
 ```
+
+#### Optional: PSR15 Middleware
+
+The endpoint class implements the PSR15 `MiddlewareInterface`.
 
 ### MethodProvider
 

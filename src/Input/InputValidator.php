@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Input;
 
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Usox\JsonSchemaApi\Exception\JsonInvalidException;
 use Usox\JsonSchemaApi\Exception\RequestValidationException;
 use JsonSchema\Validator;
@@ -25,7 +25,7 @@ final class InputValidator implements InputValidatorInterface
      * @throws JsonInvalidException
      * @throws RequestValidationException
      */
-    public function validate(RequestInterface $request): stdClass 
+    public function validate(ServerRequestInterface $request): stdClass 
     {
         // Decode the input and load the schema
         $decodedInput = json_decode($request->getBody()->getContents());

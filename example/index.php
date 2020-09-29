@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\StreamFactory;
+use Psr\Http\Message\ServerRequestInterface;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Endpoint;
@@ -20,7 +21,10 @@ $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 
 final class BeerlistMethod implements ApiMethodInterface
 {
-    public function handle(stdClass $parameter): array
+    public function handle(
+        ServerRequestInterface $request,
+        stdClass $parameter
+    ): array
     {
         return [
             'styles' => [

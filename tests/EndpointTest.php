@@ -8,10 +8,11 @@ use Exception;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
@@ -69,7 +70,7 @@ class EndpointTest extends MockeryTestCase
     
     public function testServeReturnsHandlerOutput(): void
     {
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
         $handler = Mockery::mock(ApiMethodInterface::class);
         
@@ -90,7 +91,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($handler);
         
         $handler->shouldReceive('handle')
-            ->with($parameter)
+            ->with($request, $parameter)
             ->once()
             ->andReturn($responseData);
         
@@ -113,7 +114,7 @@ class EndpointTest extends MockeryTestCase
 
     public function testServeCatchesApiMethodException(): void
     {
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
         $uuid = Mockery::mock(UuidInterface::class);
         
@@ -165,7 +166,7 @@ class EndpointTest extends MockeryTestCase
 
     public function testServeCatchesApiException(): void
     {
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
         $uuid = Mockery::mock(UuidInterface::class);
 
@@ -217,7 +218,7 @@ class EndpointTest extends MockeryTestCase
 
     public function testServeCatchesGenericException(): void
     {
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
         $uuid = Mockery::mock(UuidInterface::class);
 
@@ -269,6 +270,56 @@ class EndpointTest extends MockeryTestCase
                 Mockery::mock(StreamFactoryInterface::class),
                 Mockery::mock(MethodProviderInterface::class)
             )
+        );
+    }
+
+    public function testProcessWorksWithMiddleware(): void
+    {
+        $request = Mockery::mock(ServerRequestInterface::class);
+        $response = Mockery::mock(ResponseInterface::class);
+        $handler = Mockery::mock(ApiMethodInterface::class);
+        $requestHandler = Mockery::mock(RequestHandlerInterface::class);
+
+        $parameter = new stdClass();
+        $decodedInput = new stdClass();
+        $decodedInput->parameter = $parameter;
+        $responseData = ['some-response'];
+        $processedResponse = ['some-processed-response'];
+
+        $this->inputValidator->shouldReceive('validate')
+            ->with($request)
+            ->once()
+            ->andReturn($decodedInput);
+
+        $this->methodRetriever->shouldReceive('retrieve')
+            ->with($decodedInput)
+            ->once()
+            ->andReturn($handler);
+
+        $handler->shouldReceive('handle')
+            ->with($request, $parameter)
+            ->once()
+            ->andReturn($responseData);
+
+        $this->responseBuilder->shouldReceive('buildResponse')
+            ->with($responseData)
+            ->once()
+            ->andReturn($processedResponse);
+
+        $this->createResponseExpectations(
+            $response,
+            $processedResponse,
+            StatusCode::OK
+        );
+        
+        $requestHandler->shouldReceive('handle')
+            ->with($request)
+            ->once()
+            ->andReturn($response);
+
+        $this->assertSame(
+            $response,
+            $this->subject->process($request, $requestHandler)
         );
     }
 
