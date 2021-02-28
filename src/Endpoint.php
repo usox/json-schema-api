@@ -15,7 +15,6 @@ use Ramsey\Uuid\UuidInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Exception\ApiException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
-use Usox\JsonSchemaApi\Exception\InternalException;
 use Usox\JsonSchemaApi\Input\InputValidator;
 use Usox\JsonSchemaApi\Input\InputValidatorInterface;
 use JsonSchema\Validator;
@@ -83,7 +82,7 @@ final class Endpoint implements
             $responseData = $this->responseBuilder->buildErrorResponse($e, $uuid);
 
             $statusCode = StatusCode::BAD_REQUEST;
-        } catch (InternalException | Throwable $e) {
+        } catch (Throwable $e) {
             $uuid = $this->uuidFactory->uuid4();
             
             $this->log($e, $uuid);
@@ -140,8 +139,9 @@ final class Endpoint implements
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $response = $handler->handle($request);
-        
-        return $this->serve($request, $response);
+        return $this->serve(
+            $request,
+            $handler->handle($request)
+        );
     }
 }

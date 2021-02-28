@@ -24,8 +24,7 @@ final class BeerlistMethod implements ApiMethodInterface
     public function handle(
         ServerRequestInterface $request,
         stdClass $parameter
-    ): array
-    {
+    ): array {
         return [
             'styles' => [
                 'ipa',
@@ -42,6 +41,7 @@ final class BeerlistMethod implements ApiMethodInterface
         return __DIR__ . '/schema/beerlist.json';
     }
 }
+
 $methodContainer = new class implements MethodProviderInterface {
 
     private array $methods;
