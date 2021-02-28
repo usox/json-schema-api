@@ -1,4 +1,4 @@
-![PHP Composer](https://github.com/usox/json-schema-api/workflows/PHP%20Composer/badge.svg)
+[![Unittests](https://github.com/usox/json-schema-api/actions/workflows/php.yml/badge.svg)](https://github.com/usox/json-schema-api/actions/workflows/php.yml)
 
 # JsonSchemaApi
 
