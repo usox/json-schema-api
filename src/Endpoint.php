@@ -4,35 +4,36 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi;
 
+use JsonSchema\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
-use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
-use Usox\JsonSchemaApi\Exception\ApiException;
-use Usox\JsonSchemaApi\Exception\ApiMethodException;
-use Usox\JsonSchemaApi\Input\InputValidator;
-use Usox\JsonSchemaApi\Input\InputValidatorInterface;
-use JsonSchema\Validator;
-use Psr\Log\LoggerInterface;
 use Teapot\StatusCode;
 use Throwable;
-use Usox\JsonSchemaApi\Input\MethodRetriever;
-use Usox\JsonSchemaApi\Input\MethodRetrieverInterface;
-use Usox\JsonSchemaApi\Input\MethodValidator;
+use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
+use Usox\JsonSchemaApi\Exception\ApiException;
+use Usox\JsonSchemaApi\Exception\InternalException;
+use Usox\JsonSchemaApi\Dispatch\MethodDispatcher;
+use Usox\JsonSchemaApi\Dispatch\MethodDispatcherInterface;
+use Usox\JsonSchemaApi\Dispatch\MethodValidator;
+use Usox\JsonSchemaApi\Dispatch\RequestValidator;
+use Usox\JsonSchemaApi\Dispatch\RequestValidatorInterface;
+use Usox\JsonSchemaApi\Dispatch\SchemaLoader;
 use Usox\JsonSchemaApi\Response\ResponseBuilder;
 use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
 final class Endpoint implements 
     MiddlewareInterface
 {
-    private InputValidatorInterface $inputValidator;
+    private RequestValidatorInterface $inputValidator;
 
-    private MethodRetrieverInterface $methodRetriever;
+    private MethodDispatcherInterface $methodRetriever;
 
     private ResponseBuilderInterface $responseBuilder;
 
@@ -43,8 +44,8 @@ final class Endpoint implements
     private ?LoggerInterface $logger;
 
     public function __construct(
-        InputValidatorInterface $inputValidator,
-        MethodRetrieverInterface $methodRetriever,
+        RequestValidatorInterface $inputValidator,
+        MethodDispatcherInterface $methodRetriever,
         ResponseBuilderInterface $responseBuilder,
         UuidFactoryInterface $uuidFactory,
         StreamFactoryInterface $streamFactory,
@@ -65,23 +66,29 @@ final class Endpoint implements
         $statusCode = StatusCode::OK;
         
         try {
-            $decodedInput = $this->inputValidator->validate($request);
-
-            $handler = $this->methodRetriever->retrieve($decodedInput);
-
             // Process and build the response
             $responseData = $this->responseBuilder->buildResponse(
-                $handler->handle($request, $decodedInput->parameter)
+                $this->methodRetriever->dispatch(
+                    $request,
+                    $this->inputValidator->validate($request)
+                )
             );
-        } catch (ApiMethodException | ApiException $e) {
+        } catch (ApiException $e) {
             $uuid = $this->uuidFactory->uuid4();
-            
+
             $this->log($e, $uuid);
-            
+
             // Build an error response
             $responseData = $this->responseBuilder->buildErrorResponse($e, $uuid);
 
             $statusCode = StatusCode::BAD_REQUEST;
+        } catch (InternalException $e) {
+            $uuid = $this->uuidFactory->uuid4();
+
+            $this->log($e, $uuid, $e->getContext());
+
+            $responseData = '';
+            $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
             $uuid = $this->uuidFactory->uuid4();
             
@@ -90,18 +97,27 @@ final class Endpoint implements
             $responseData = '';
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         } finally {
+            /** @var string $encodedResponse */
+            $encodedResponse = json_encode($responseData);
+            
             return $response
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus($statusCode)
                 ->withBody(
-                    $this->streamFactory->createStream(json_encode($responseData))
+                    $this->streamFactory->createStream($encodedResponse)
                 );
         }
     }
-    
+
+    /**
+     * @param Throwable $e
+     * @param UuidInterface $uuid
+     * @param array<mixed, mixed> $context
+     */
     private function log(
         Throwable $e,
-        UuidInterface $uuid
+        UuidInterface $uuid,
+        array $context = []
     ): void {
         if ($this->logger !== null) {
             $this->logger->error(
@@ -109,7 +125,8 @@ final class Endpoint implements
                 [
                     'id' => $uuid->toString(),
                     'file' => $e->getFile(),
-                    'line' => $e->getLine()
+                    'line' => $e->getLine(),
+                    'context' => $context
                 ]
             );
         }
@@ -121,10 +138,15 @@ final class Endpoint implements
         ?LoggerInterface $logger = null
     ): Endpoint {
         $schemaValidator = new Validator();
+        $schemaLoader = new SchemaLoader();
         
         return new self(
-            new InputValidator($schemaValidator),
-            new MethodRetriever(
+            new RequestValidator(
+                $schemaLoader,
+                $schemaValidator
+            ),
+            new MethodDispatcher(
+                $schemaLoader,
                 new MethodValidator($schemaValidator),
                 $methodProvider
             ),

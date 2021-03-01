@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Usox\JsonSchemaApi\Input;
+namespace Usox\JsonSchemaApi\Dispatch;
 
 use JsonSchema\Validator;
 use Mockery;
@@ -11,22 +11,26 @@ use Mockery\MockInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Teapot\StatusCode;
-use Usox\JsonSchemaApi\Exception\JsonInvalidException;
-use Usox\JsonSchemaApi\Exception\RequestValidationException;
+use Usox\JsonSchemaApi\Dispatch\Exception\JsonInvalidException;
+use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 
-class InputValidatorTest extends MockeryTestCase
+class RequestValidatorTest extends MockeryTestCase
 {
-    /** @var MockInterface|Validator|null */
+    /** @var MockInterface|SchemaLoaderInterface */
+    private MockInterface $schemaLoader;
+    
+    /** @var MockInterface|Validator */
     private MockInterface $validator;
     
-    /** @var InputValidator|null */
-    private InputValidator $subject;
+    private RequestValidator $subject;
     
     public function setUp(): void
     {
+        $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
         $this->validator = Mockery::mock(Validator::class);
         
-        $this->subject = new InputValidator(
+        $this->subject = new RequestValidator(
+            $this->schemaLoader,
             $this->validator
         );
     }
@@ -57,7 +61,7 @@ class InputValidatorTest extends MockeryTestCase
 
     public function testValidateThrowsExceptionIfInputDoesNotValidate(): void
     {
-        $this->expectException(RequestValidationException::class);
+        $this->expectException(RequestMalformedException::class);
         $this->expectExceptionMessage('Request is invalid');
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
 
@@ -65,9 +69,11 @@ class InputValidatorTest extends MockeryTestCase
         $request = Mockery::mock(ServerRequestInterface::class);
 
         $input = ['some' => 'input'];
-        $schemaContent = json_decode(
-            file_get_contents(__DIR__ . '/../../dist/request.json')
-        );
+        $schemaContent = (object) ['some' => 'schema-content'];
+
+        $this->schemaLoader->shouldReceive('load')
+            ->once()
+            ->andReturn($schemaContent);
         
         $this->validator->shouldReceive('validate')
             ->with(
@@ -100,9 +106,11 @@ class InputValidatorTest extends MockeryTestCase
         $request = Mockery::mock(ServerRequestInterface::class);
 
         $input = ['some' => 'input'];
-        $schemaContent = json_decode(
-            file_get_contents(__DIR__ . '/../../dist/request.json')
-        );
+        $schemaContent = (object) ['some' => 'schema-content'];
+
+        $this->schemaLoader->shouldReceive('load')
+            ->once()
+            ->andReturn($schemaContent);
 
         $this->validator->shouldReceive('validate')
             ->with(
@@ -126,7 +134,7 @@ class InputValidatorTest extends MockeryTestCase
             ->once()
             ->andReturn(json_encode($input));
 
-        $this->assertEquals(
+        static::assertEquals(
             (object) $input,
             $this->subject->validate($request)
         );

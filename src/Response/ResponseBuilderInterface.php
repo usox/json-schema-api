@@ -9,10 +9,18 @@ use Throwable;
 
 interface ResponseBuilderInterface
 {
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     public function buildErrorResponse(
         Throwable $e,
         UuidInterface $uuid
     ): array;
 
+    /**
+     * @param array<mixed, mixed> $data
+     * 
+     * @return array<string, array<mixed, mixed>>
+     */
     public function buildResponse(array $data): array;
 }

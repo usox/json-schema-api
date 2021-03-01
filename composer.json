@@ -34,12 +34,17 @@
 		"laminas/laminas-diactoros": "^2.4",
 		"mikey179/vfsstream": "^1.6",
 		"mockery/mockery": "^1.4",
+		"phpstan/phpstan": "^0.12.80",
+		"phpstan/phpstan-mockery": "^0.12.12",
+		"phpstan/phpstan-strict-rules": "^0.12.9",
 		"phpunit/phpunit": "^9.5"
 	},
 	"config": {
 		"sort-packages": true
 	},
 	"scripts": {
-		"test": "./vendor/bin/phpunit tests"
+		"test": "./vendor/bin/phpunit tests",
+		"stan": "./vendor/bin/phpstan analyse",
+		"coverage": "./vendor/bin/phpunit --warm-coverage-cache tests && XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html build/coverage tests"
 	}
 }

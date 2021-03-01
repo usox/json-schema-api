@@ -26,7 +26,7 @@ final class BeerlistMethod implements ApiMethodInterface
         stdClass $parameter
     ): array {
         return [
-            'styles' => [
+            'beer_style_list' => [
                 'ipa',
                 'lager',
                 'porter',

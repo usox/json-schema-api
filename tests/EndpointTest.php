@@ -18,49 +18,48 @@ use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
 use Teapot\StatusCode;
-use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
+use Usox\JsonSchemaApi\Dispatch\MethodDispatcherInterface;
+use Usox\JsonSchemaApi\Dispatch\RequestValidatorInterface;
 use Usox\JsonSchemaApi\Exception\ApiException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
-use Usox\JsonSchemaApi\Input\InputValidatorInterface;
-use Usox\JsonSchemaApi\Input\MethodRetrieverInterface;
+use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
 class EndpointTest extends MockeryTestCase
 {
-    /** @var InputValidatorInterface|MockInterface|null */
-    private MockInterface $inputValidator;
+    /** @var RequestValidatorInterface|MockInterface */
+    private MockInterface $requestValidator;
 
-    /** @var MethodRetrieverInterface|MockInterface|null */
-    private MockInterface $methodRetriever;
+    /** @var MethodDispatcherInterface|MockInterface */
+    private MockInterface $methodDispatcher;
 
-    /** @var ResponseBuilderInterface|MockInterface|null */
+    /** @var ResponseBuilderInterface|MockInterface */
     private MockInterface $responseBuilder;
 
-    /** @var UuidFactoryInterface|MockInterface|null */
+    /** @var UuidFactoryInterface|MockInterface */
     private MockInterface $uuidFactory;
 
-    /** @var StreamFactoryInterface|MockInterface|null */
+    /** @var StreamFactoryInterface|MockInterface */
     private MockInterface $streamFactory;
 
-    /** @var LoggerInterface|MockInterface|null */
+    /** @var LoggerInterface|MockInterface */
     private MockInterface $logger;
     
-    /** @var Endpoint|null */
     private Endpoint $subject;
     
     public function setUp(): void
     {
-        $this->inputValidator = Mockery::mock(InputValidatorInterface::class);
-        $this->methodRetriever = Mockery::mock(MethodRetrieverInterface::class);
+        $this->requestValidator = Mockery::mock(RequestValidatorInterface::class);
+        $this->methodDispatcher = Mockery::mock(MethodDispatcherInterface::class);
         $this->responseBuilder = Mockery::mock(ResponseBuilderInterface::class);
         $this->uuidFactory = Mockery::mock(UuidFactoryInterface::class);
         $this->streamFactory = Mockery::mock(StreamFactoryInterface::class);
         $this->logger = Mockery::mock(LoggerInterface::class);
         
         $this->subject = new Endpoint(
-            $this->inputValidator,
-            $this->methodRetriever,
+            $this->requestValidator,
+            $this->methodDispatcher,
             $this->responseBuilder,
             $this->uuidFactory,
             $this->streamFactory,
@@ -72,7 +71,6 @@ class EndpointTest extends MockeryTestCase
     {
         $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
-        $handler = Mockery::mock(ApiMethodInterface::class);
         
         $parameter = new stdClass();
         $decodedInput = new stdClass();
@@ -80,18 +78,13 @@ class EndpointTest extends MockeryTestCase
         $responseData = ['some-response'];
         $processedResponse = ['some-processed-response'];
         
-        $this->inputValidator->shouldReceive('validate')
+        $this->requestValidator->shouldReceive('validate')
             ->with($request)
             ->once()
             ->andReturn($decodedInput);
         
-        $this->methodRetriever->shouldReceive('retrieve')
-            ->with($decodedInput)
-            ->once()
-            ->andReturn($handler);
-        
-        $handler->shouldReceive('handle')
-            ->with($request, $parameter)
+        $this->methodDispatcher->shouldReceive('dispatch')
+            ->with($request, $decodedInput)
             ->once()
             ->andReturn($responseData);
         
@@ -106,7 +99,7 @@ class EndpointTest extends MockeryTestCase
             StatusCode::OK
         );
         
-        $this->assertSame(
+        static::assertSame(
             $response,
             $this->subject->serve($request, $response)
         );
@@ -125,7 +118,7 @@ class EndpointTest extends MockeryTestCase
 
         $error = new class($errorMessage, $errorCode) extends ApiMethodException {};
 
-        $this->inputValidator->shouldReceive('validate')
+        $this->requestValidator->shouldReceive('validate')
             ->with($request)
             ->once()
             ->andThrow($error);
@@ -158,7 +151,7 @@ class EndpointTest extends MockeryTestCase
             )
             ->once();
 
-        $this->assertSame(
+        static::assertSame(
             $response,
             $this->subject->serve($request, $response)
         );
@@ -177,7 +170,7 @@ class EndpointTest extends MockeryTestCase
 
         $error = new class($errorMessage, $errorCode) extends ApiException {};
 
-        $this->inputValidator->shouldReceive('validate')
+        $this->requestValidator->shouldReceive('validate')
             ->with($request)
             ->once()
             ->andThrow($error);
@@ -210,7 +203,7 @@ class EndpointTest extends MockeryTestCase
             )
             ->once();
 
-        $this->assertSame(
+        static::assertSame(
             $response,
             $this->subject->serve($request, $response)
         );
@@ -228,7 +221,7 @@ class EndpointTest extends MockeryTestCase
 
         $error = new Exception($errorMessage, $errorCode);
 
-        $this->inputValidator->shouldReceive('validate')
+        $this->requestValidator->shouldReceive('validate')
             ->with($request)
             ->once()
             ->andThrow($error);
@@ -256,7 +249,54 @@ class EndpointTest extends MockeryTestCase
             )
             ->once();
 
-        $this->assertSame(
+        static::assertSame(
+            $response,
+            $this->subject->serve($request, $response)
+        );
+    }
+
+    public function testServeCatchesInternalException(): void
+    {
+        $request = Mockery::mock(ServerRequestInterface::class);
+        $response = Mockery::mock(ResponseInterface::class);
+        $uuid = Mockery::mock(UuidInterface::class);
+
+        $errorMessage = 'some-error';
+        $errorCode = 666;
+        $uuidValue = 'some-uuid';
+        $context = ['some' => 'context'];
+
+        $error = new ResponseMalformedException($errorMessage, $errorCode, null, $context);
+
+        $this->requestValidator->shouldReceive('validate')
+            ->with($request)
+            ->once()
+            ->andThrow($error);
+
+        $this->uuidFactory->shouldReceive('uuid4')
+            ->withNoArgs()
+            ->once()
+            ->andReturn($uuid);
+
+        $uuid->shouldReceive('toString')
+            ->withNoArgs()
+            ->once()
+            ->andReturn($uuidValue);
+
+        $this->createResponseExpectations(
+            $response,
+            '',
+            StatusCode::INTERNAL_SERVER_ERROR
+        );
+
+        $this->logger->shouldReceive('error')
+            ->with(
+                sprintf('%s (%d)', $errorMessage, $errorCode),
+                Mockery::type('array')
+            )
+            ->once();
+
+        static::assertSame(
             $response,
             $this->subject->serve($request, $response)
         );
@@ -264,7 +304,7 @@ class EndpointTest extends MockeryTestCase
     
     public function testFactoryReturnsInstance(): void
     {
-        $this->assertInstanceOf(
+        static::assertInstanceOf(
             Endpoint::class,
             Endpoint::factory(
                 Mockery::mock(StreamFactoryInterface::class),
@@ -277,7 +317,6 @@ class EndpointTest extends MockeryTestCase
     {
         $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
-        $handler = Mockery::mock(ApiMethodInterface::class);
         $requestHandler = Mockery::mock(RequestHandlerInterface::class);
 
         $parameter = new stdClass();
@@ -286,18 +325,13 @@ class EndpointTest extends MockeryTestCase
         $responseData = ['some-response'];
         $processedResponse = ['some-processed-response'];
 
-        $this->inputValidator->shouldReceive('validate')
+        $this->requestValidator->shouldReceive('validate')
             ->with($request)
             ->once()
             ->andReturn($decodedInput);
 
-        $this->methodRetriever->shouldReceive('retrieve')
-            ->with($decodedInput)
-            ->once()
-            ->andReturn($handler);
-
-        $handler->shouldReceive('handle')
-            ->with($request, $parameter)
+        $this->methodDispatcher->shouldReceive('dispatch')
+            ->with($request, $decodedInput)
             ->once()
             ->andReturn($responseData);
 
@@ -317,12 +351,17 @@ class EndpointTest extends MockeryTestCase
             ->once()
             ->andReturn($response);
 
-        $this->assertSame(
+        static::assertSame(
             $response,
             $this->subject->process($request, $requestHandler)
         );
     }
 
+    /**
+     * @param MockInterface $response
+     * @param string|array<mixed, mixed> $responseData
+     * @param int $statusCode
+     */
     private function createResponseExpectations(
         MockInterface $response,
         $responseData,

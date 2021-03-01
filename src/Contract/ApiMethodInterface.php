@@ -11,6 +11,8 @@ use Usox\JsonSchemaApi\Exception\ApiMethodException;
 interface ApiMethodInterface
 {
     /**
+     * @return array<mixed, mixed>
+     * 
      * @throws ApiMethodException
      */
     public function handle(
