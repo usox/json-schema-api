@@ -14,6 +14,7 @@ filter:
     excluded_paths:
         - 'vendor/*'
         - '.github/*'
+        - 'tests/*'
     paths: {  }
 tools:
     php_mess_detector:
@@ -22,6 +23,7 @@ tools:
             excluded_paths:
                 - 'vendor/*'
                 - '.github/*'
+                - 'tests/*'
             paths: {  }
     php_code_sniffer:
         enabled: false
@@ -35,6 +37,7 @@ tools:
             excluded_paths:
                 - 'vendor/*'
                 - '.github/*'
+                - 'tests/*'
             paths: {  }
     php_analyzer:
         enabled: true
@@ -43,10 +46,12 @@ tools:
         dependency_paths:
             - 'vendor/*'
             - '.github/*'
+            - 'tests/*'
         filter:
             excluded_paths:
                 - 'vendor/*'
                 - '.github/*'
+                - 'tests/*'
             paths: {  }
         path_configs: {  }
     php_changetracking:
@@ -60,17 +65,20 @@ tools:
             excluded_paths:
                 - 'vendor/*'
                 - '.github/*'
+                - 'tests/*'
             paths: {  }
     php_loc:
         enabled: true
         excluded_dirs:
             - 'vendor/*'
             - '.github/*'
+            - 'tests/*'
     php_cpd:
         enabled: true
         excluded_dirs: {  }
         filter:
             excluded_paths:
                 - 'vendor/*'
+                - 'tests/*'
                 - '.github/*'
             paths: {  }
