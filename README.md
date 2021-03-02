@@ -1,4 +1,6 @@
 [![Unittests](https://github.com/usox/json-schema-api/actions/workflows/php.yml/badge.svg)](https://github.com/usox/json-schema-api/actions/workflows/php.yml)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/usox/json-schema-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/usox/json-schema-api/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/usox/json-schema-api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/usox/json-schema-api/?branch=master)
 
 # JsonSchemaApi
 
