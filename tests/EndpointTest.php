@@ -307,8 +307,8 @@ class EndpointTest extends MockeryTestCase
         static::assertInstanceOf(
             Endpoint::class,
             Endpoint::factory(
-                Mockery::mock(StreamFactoryInterface::class),
-                Mockery::mock(MethodProviderInterface::class)
+                Mockery::mock(MethodProviderInterface::class),
+                Mockery::mock(StreamFactoryInterface::class)
             )
         );
     }

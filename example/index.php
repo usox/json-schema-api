@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Laminas\Diactoros\ResponseFactory;
-use Laminas\Diactoros\StreamFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
@@ -44,6 +43,7 @@ final class BeerlistMethod implements ApiMethodInterface
 
 $methodContainer = new class implements MethodProviderInterface {
 
+    /** @var array<string, ApiMethodInterface> */
     private array $methods;
 
     public function __construct()
@@ -60,7 +60,6 @@ $methodContainer = new class implements MethodProviderInterface {
 };
 
 $endpoint = Endpoint::factory(
-    new StreamFactory(),
     $methodContainer
 );
 $response = $endpoint->serve(

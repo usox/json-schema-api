@@ -25,13 +25,18 @@ composer require usox/json-schema-api
 
 ## Usage
 
-Get your psr7/17 implementations and youe method-provider (see below) ready and just call the `factory`-method on the endpoint to retrieve an working instance:
+Just use the factory method to create the endpoint. The factory performs
+an autodiscovery to find a psr17 stream factory, but you can provide the factory
+as parameter in the factory method.
 
+Get your method-provider ready (see below) and call the `factory`-method on the endpoint to retrieve an working instance:
+
+The serve method requires a psr request and returns a psr response.
 ```php
 $endpoint = \Usox\JsonSchemaApi\Endpoint::factory(
-    $psr17StreamFactory,
     $methodProvider
 );
+
 $endpoint->serve(
     $psr7Request,
     $psr7Response
@@ -40,19 +45,20 @@ $endpoint->serve(
 
 #### Optional: PSR15 Middleware
 
-The endpoint class implements the PSR15 `MiddlewareInterface`.
+The endpoint class implements the [PSR15](https://www.php-fig.org/psr/psr-15/) `MiddlewareInterface`.
 
 ### MethodProvider
 
-First, a `MethodProvider` needs to be defined. This class is the source for all methods which should be available in the api - 
-this could be a simple array, a DI-Container, etc. The class simply has to implement `Usox\JsonSchemApi\Contract\MethodProviderInterface`.
+First, your `MethodProvider` needs to be defined. This class is the source for your api methods - 
+this could be a simple array, a DI-Container, etc. The class has to implement `Usox\JsonSchemApi\Contract\MethodProviderInterface`.
 
 ```php
 class MyMethodProvider implements \Usox\JsonSchemaApi\Contract\MethodProviderInterface
 {
     private array $methodList = ['beerlist' => BeerlistMethod::class];
 
-    public function lookup(string $methodName) : ?\Usox\JsonSchemaApi\Contract\ApiMethodInterface {
+    public function lookup(string $methodName) : ?\Usox\JsonSchemaApi\Contract\ApiMethodInterface 
+    {
         $handler = $this->methodList[$methodName] ?? null;
         if ($handler === null) {
             return null;
@@ -73,11 +79,13 @@ Every api method handler has to define two methods:
 ```php
 class BeerlistMethod implements \Usox\JsonSchemaApi\Contract\ApiMethodInterface
 {
-    public function handle(stdClass $parameter) : array{
+    public function handle(stdClass $parameter) : array
+    {
         return ['ipa', 'lager', 'weizen'];
     }
     
-    public function getSchemaFile() : string{
+    public function getSchemaFile() : string
+    {
         return '/path/to/schema.json';
     }
 }

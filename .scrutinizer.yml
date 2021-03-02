@@ -1,0 +1,76 @@
+build:
+    environment:
+        php:
+            version: "8.0"
+    nodes:
+        coverage:
+            tests:
+                override:
+                    - command: XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover build/coverage-clover.xml tests
+                      coverage:
+                        file: build/coverage-clover.xml
+                        format: clover
+filter:
+    excluded_paths:
+        - 'vendor/*'
+        - '.github/*'
+    paths: {  }
+tools:
+    php_mess_detector:
+        enabled: true
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - '.github/*'
+            paths: {  }
+    php_code_sniffer:
+        enabled: false
+    php_pdepend:
+        enabled: true
+        configuration_file: null
+        suffixes:
+            - php
+        excluded_dirs: {  }
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - '.github/*'
+            paths: {  }
+    php_analyzer:
+        enabled: true
+        extensions:
+            - php
+        dependency_paths:
+            - 'vendor/*'
+            - '.github/*'
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - '.github/*'
+            paths: {  }
+        path_configs: {  }
+    php_changetracking:
+        enabled: true
+        bug_patterns:
+            - '\bfix(?:es|ed)?\b'
+        feature_patterns:
+            - '\badd(?:s|ed)?\b'
+            - '\bimplement(?:s|ed)?\b'
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - '.github/*'
+            paths: {  }
+    php_loc:
+        enabled: true
+        excluded_dirs:
+            - 'vendor/*'
+            - '.github/*'
+    php_cpd:
+        enabled: true
+        excluded_dirs: {  }
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - '.github/*'
+            paths: {  }

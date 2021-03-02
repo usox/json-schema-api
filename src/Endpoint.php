@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi;
 
+use Http\Discovery\Psr17FactoryDiscovery;
 use JsonSchema\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -133,12 +134,16 @@ final class Endpoint implements
     }
     
     public static function factory(
-        StreamFactoryInterface $streamFactory,
         MethodProviderInterface $methodProvider,
+        ?StreamFactoryInterface $streamFactory = null,
         ?LoggerInterface $logger = null
     ): Endpoint {
         $schemaValidator = new Validator();
         $schemaLoader = new SchemaLoader();
+
+        if ($streamFactory === null) {
+            $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
+        }
         
         return new self(
             new RequestValidator(
