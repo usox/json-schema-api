@@ -59,6 +59,9 @@ final class Endpoint implements
         $this->logger = $logger;
     }
 
+    /**
+     * Try to execute the api handler and build the response
+     */
     public function serve(
         ServerRequestInterface $request,
         ResponseInterface $response
@@ -130,12 +133,17 @@ final class Endpoint implements
             );
         }
     }
-    
+
+    /**
+     * Builds the endpoint.
+     * The StreamFactory can be omitted, the endpoint will search
+     * for any existing PSR17 implementations
+     */
     public static function factory(
         MethodProviderInterface $methodProvider,
         ?StreamFactoryInterface $streamFactory = null,
         ?LoggerInterface $logger = null
-    ): Endpoint {
+    ): EndpointInterface {
         $schemaValidator = new Validator();
         $schemaLoader = new SchemaLoader();
 
