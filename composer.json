@@ -45,7 +45,7 @@
     "sort-packages": true
   },
   "scripts": {
-    "qa": "@composer check-cs && @composer stan && @composer stan",
+    "qa": "composer check-cs && composer stan && composer stan",
     "check-cs": "./vendor/bin/php-cs-fixer fix --dry-run",
     "fix-cs": "./vendor/bin/php-cs-fixer fix",
     "test": "./vendor/bin/phpunit tests",
