@@ -8,5 +8,4 @@ use Usox\JsonSchemaApi\Exception\InternalException;
 
 final class SchemaInvalidException extends InternalException
 {
-
 }

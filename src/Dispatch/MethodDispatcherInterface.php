@@ -15,7 +15,7 @@ interface MethodDispatcherInterface
 {
     /**
      * @return array<mixed, mixed>
-     * 
+     *
      * @throws MethodNotFoundException
      * @throws ApiMethodException
      * @throws RequestMalformedException

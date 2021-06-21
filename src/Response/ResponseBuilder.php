@@ -27,7 +27,7 @@ final class ResponseBuilder implements ResponseBuilderInterface
 
     /**
      * @param array<mixed, mixed> $data
-     * 
+     *
      * @return array<string, array<mixed, mixed>>
      */
     public function buildResponse(array $data): array

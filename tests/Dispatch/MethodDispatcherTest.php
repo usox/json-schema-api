@@ -17,46 +17,46 @@ class MethodDispatcherTest extends MockeryTestCase
 {
     /** @var MockInterface|SchemaLoaderInterface */
     private MockInterface $schemaLoader;
-    
+
     /** @var MethodValidatorInterface|MockInterface */
     private MockInterface $methodValidator;
 
     /** @var MethodProviderInterface|MockInterface */
     private MockInterface $methodProvider;
-    
+
     private MethodDispatcher $subject;
-    
+
     public function setUp(): void
     {
         $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
         $this->methodValidator = Mockery::mock(MethodValidatorInterface::class);
         $this->methodProvider = Mockery::mock(MethodProviderInterface::class);
-        
+
         $this->subject = new MethodDispatcher(
             $this->schemaLoader,
             $this->methodValidator,
             $this->methodProvider
         );
     }
-    
+
     public function testDispatchThrowsExceptionIfMethodDoesNotExist(): void
     {
         $request = Mockery::mock(ServerRequestInterface::class);
-        
+
         $this->expectException(MethodNotFoundException::class);
         $this->expectExceptionMessage('Method not found');
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
-        
+
         $method = 'some-method';
         $version = null;
-        
+
         $input = ['method' => $method, 'version' => $version];
-        
+
         $this->methodProvider->shouldReceive('lookup')
             ->with($method)
             ->once()
             ->andReturnNull();
-        
+
         $this->subject->dispatch(
             $request,
             (object) $input
@@ -76,12 +76,12 @@ class MethodDispatcherTest extends MockeryTestCase
 
         $request = Mockery::mock(ServerRequestInterface::class);
         $handler = Mockery::mock(ApiMethodInterface::class);
-        
+
         $handler->shouldReceive('getSchemaFile')
             ->withNoArgs()
             ->once()
             ->andReturn($schemaFilePath);
-        
+
         $this->schemaLoader->shouldReceive('load')
             ->with($schemaFilePath)
             ->once()
@@ -91,7 +91,7 @@ class MethodDispatcherTest extends MockeryTestCase
             ->with(sprintf('%s.%d', $method, $version))
             ->once()
             ->andReturn($handler);
-        
+
         $this->methodValidator->shouldReceive('validateInput')
             ->with($schemaContent, $input)
             ->once();
@@ -103,12 +103,12 @@ class MethodDispatcherTest extends MockeryTestCase
                 })
             )
             ->once();
-        
+
         $handler->shouldReceive('handle')
             ->with($request, $parameter)
             ->once()
             ->andReturn($result);
-        
+
         static::assertSame(
             $result,
             $this->subject->dispatch($request, $input)

@@ -14,7 +14,7 @@ use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 final class RequestValidator implements RequestValidatorInterface
 {
     private SchemaLoaderInterface $schemaLoader;
-    
+
     private Validator $schemaValidator;
 
     public function __construct(
@@ -59,7 +59,7 @@ final class RequestValidator implements RequestValidatorInterface
                 StatusCode::BAD_REQUEST
             );
         }
-        
+
         return $decodedInput;
     }
 }

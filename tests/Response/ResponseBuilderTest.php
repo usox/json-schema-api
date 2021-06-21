@@ -13,26 +13,26 @@ class ResponseBuilderTest extends MockeryTestCase
 {
     /** @var ResponseBuilder|null */
     private ResponseBuilder $subject;
-    
+
     public function setUp(): void
     {
         $this->subject = new ResponseBuilder();
     }
-    
+
     public function testBuildErrorResponseReturnsData(): void
     {
         $message = 'some-error';
         $code = 666;
         $uuidValue = 'some-uuid';
         $error = new Exception($message, $code);
-        
+
         $uuid = Mockery::mock(UuidInterface::class);
-        
+
         $uuid->shouldReceive('toString')
             ->withNoArgs()
             ->once()
             ->andReturn($uuidValue);
-        
+
         $this->assertSame(
             [
                 'error' => [
@@ -44,11 +44,11 @@ class ResponseBuilderTest extends MockeryTestCase
             $this->subject->buildErrorResponse($error, $uuid)
         );
     }
-    
+
     public function testBuildResponseReturnsResponse(): void
     {
         $data = ['some-data'];
-        
+
         $this->assertSame(
             ['data' => $data],
             $this->subject->buildResponse($data)

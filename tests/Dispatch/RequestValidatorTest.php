@@ -18,44 +18,44 @@ class RequestValidatorTest extends MockeryTestCase
 {
     /** @var MockInterface|SchemaLoaderInterface */
     private MockInterface $schemaLoader;
-    
+
     /** @var MockInterface|Validator */
     private MockInterface $validator;
-    
+
     private RequestValidator $subject;
-    
+
     public function setUp(): void
     {
         $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
         $this->validator = Mockery::mock(Validator::class);
-        
+
         $this->subject = new RequestValidator(
             $this->schemaLoader,
             $this->validator
         );
     }
-    
+
     public function testValidateThrowsExceptionIfInputIsInvalid(): void
     {
         $this->expectException(JsonInvalidException::class);
         $this->expectExceptionMessage('Input is no valid json (Syntax error)');
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
-        
+
         $stream = Mockery::mock(StreamInterface::class);
         $request = Mockery::mock(ServerRequestInterface::class);
-        
+
         $input = 'some-input' . PHP_EOL . 'errors';
-        
+
         $request->shouldReceive('getBody')
             ->withNoArgs()
             ->once()
             ->andReturn($stream);
-        
+
         $stream->shouldReceive('getContents')
             ->withNoArgs()
             ->once()
             ->andReturn($input);
-        
+
         $this->subject->validate($request);
     }
 
@@ -74,7 +74,7 @@ class RequestValidatorTest extends MockeryTestCase
         $this->schemaLoader->shouldReceive('load')
             ->once()
             ->andReturn($schemaContent);
-        
+
         $this->validator->shouldReceive('validate')
             ->with(
                 Mockery::on(static function ($value) use ($input): bool {

@@ -8,5 +8,4 @@ use Usox\JsonSchemaApi\Exception\ApiException;
 
 final class JsonInvalidException extends ApiException
 {
-
 }

@@ -14,7 +14,7 @@ use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 class SchemaLoaderTest extends MockeryTestCase
 {
     private SchemaLoader $subject;
-    
+
     public function setUp(): void
     {
         $this->subject = new SchemaLoader();

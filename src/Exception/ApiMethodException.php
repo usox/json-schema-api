@@ -6,5 +6,4 @@ namespace Usox\JsonSchemaApi\Exception;
 
 abstract class ApiMethodException extends ApiException
 {
-
 }

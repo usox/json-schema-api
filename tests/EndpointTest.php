@@ -45,9 +45,9 @@ class EndpointTest extends MockeryTestCase
 
     /** @var LoggerInterface|MockInterface */
     private MockInterface $logger;
-    
+
     private Endpoint $subject;
-    
+
     public function setUp(): void
     {
         $this->requestValidator = Mockery::mock(RequestValidatorInterface::class);
@@ -56,7 +56,7 @@ class EndpointTest extends MockeryTestCase
         $this->uuidFactory = Mockery::mock(UuidFactoryInterface::class);
         $this->streamFactory = Mockery::mock(StreamFactoryInterface::class);
         $this->logger = Mockery::mock(LoggerInterface::class);
-        
+
         $this->subject = new Endpoint(
             $this->requestValidator,
             $this->methodDispatcher,
@@ -66,39 +66,39 @@ class EndpointTest extends MockeryTestCase
             $this->logger
         );
     }
-    
+
     public function testServeReturnsHandlerOutput(): void
     {
         $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
-        
+
         $parameter = new stdClass();
         $decodedInput = new stdClass();
         $decodedInput->parameter = $parameter;
         $responseData = ['some-response'];
         $processedResponse = ['some-processed-response'];
-        
+
         $this->requestValidator->shouldReceive('validate')
             ->with($request)
             ->once()
             ->andReturn($decodedInput);
-        
+
         $this->methodDispatcher->shouldReceive('dispatch')
             ->with($request, $decodedInput)
             ->once()
             ->andReturn($responseData);
-        
+
         $this->responseBuilder->shouldReceive('buildResponse')
             ->with($responseData)
             ->once()
             ->andReturn($processedResponse);
-        
+
         $this->createResponseExpectations(
             $response,
             $processedResponse,
             StatusCode::OK
         );
-        
+
         static::assertSame(
             $response,
             $this->subject->serve($request, $response)
@@ -110,7 +110,7 @@ class EndpointTest extends MockeryTestCase
         $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
         $uuid = Mockery::mock(UuidInterface::class);
-        
+
         $errorMessage = 'some-error';
         $errorCode = 666;
         $processedResponse = ['some-processed-response'];
@@ -127,12 +127,12 @@ class EndpointTest extends MockeryTestCase
             ->with($error, $uuid)
             ->once()
             ->andReturn($processedResponse);
-        
+
         $this->uuidFactory->shouldReceive('uuid4')
             ->withNoArgs()
             ->once()
             ->andReturn($uuid);
-        
+
         $uuid->shouldReceive('toString')
             ->withNoArgs()
             ->once()
@@ -143,7 +143,7 @@ class EndpointTest extends MockeryTestCase
             $processedResponse,
             StatusCode::BAD_REQUEST
         );
-        
+
         $this->logger->shouldReceive('error')
             ->with(
                 sprintf('%s (%d)', $errorMessage, $errorCode),
@@ -301,7 +301,7 @@ class EndpointTest extends MockeryTestCase
             $this->subject->serve($request, $response)
         );
     }
-    
+
     public function testFactoryReturnsInstance(): void
     {
         static::assertInstanceOf(
@@ -345,7 +345,7 @@ class EndpointTest extends MockeryTestCase
             $processedResponse,
             StatusCode::OK
         );
-        
+
         $requestHandler->shouldReceive('handle')
             ->with($request)
             ->once()
@@ -368,12 +368,12 @@ class EndpointTest extends MockeryTestCase
         int $statusCode
     ): void {
         $stream = Mockery::mock(StreamInterface::class);
-        
+
         $this->streamFactory->shouldReceive('createStream')
             ->with(json_encode($responseData))
             ->once()
             ->andReturn($stream);
-        
+
         $response->shouldReceive('withHeader')
             ->with('Content-Type', 'application/json')
             ->once()

@@ -16,7 +16,7 @@ interface ApiMethodInterface
      * @param stdClass $parameter The method parameter as described in the schema
      *
      * @return array<mixed, mixed> The api method response
-     * 
+     *
      * @throws ApiMethodException
      */
     public function handle(

@@ -26,9 +26,9 @@ final class SchemaLoader implements SchemaLoaderInterface
                 StatusCode::INTERNAL_SERVER_ERROR
             );
         }
-        
+
         $fileContent = @file_get_contents($schemaFilePath);
-        
+
         if ($fileContent === false) {
             throw new Exception\SchemaNotLoadableException(
                 sprintf('Schema file `%s` not loadable', $schemaFilePath),
@@ -45,7 +45,7 @@ final class SchemaLoader implements SchemaLoaderInterface
                 StatusCode::INTERNAL_SERVER_ERROR
             );
         }
-        
+
         return $methodSchemaContent;
     }
 }

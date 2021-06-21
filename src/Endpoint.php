@@ -28,7 +28,7 @@ use Usox\JsonSchemaApi\Dispatch\SchemaLoader;
 use Usox\JsonSchemaApi\Response\ResponseBuilder;
 use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
-final class Endpoint implements 
+final class Endpoint implements
     EndpointInterface
 {
     private RequestValidatorInterface $inputValidator;
@@ -67,7 +67,7 @@ final class Endpoint implements
         ResponseInterface $response
     ): ResponseInterface {
         $statusCode = StatusCode::OK;
-        
+
         try {
             // Process and build the response
             $responseData = $this->responseBuilder->buildResponse(
@@ -94,9 +94,9 @@ final class Endpoint implements
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
             $uuid = $this->uuidFactory->uuid4();
-            
+
             $this->log($e, $uuid);
-            
+
             $responseData = '';
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         }
@@ -150,7 +150,7 @@ final class Endpoint implements
         if ($streamFactory === null) {
             $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
         }
-        
+
         return new self(
             new RequestValidator(
                 $schemaLoader,

@@ -16,18 +16,18 @@ class MethodValidatorTest extends MockeryTestCase
 {
     /** @var Validator|MockInterface */
     private MockInterface $schemaValidator;
-    
+
     private MethodValidator $subject;
-    
+
     public function setUp(): void
     {
         $this->schemaValidator = Mockery::mock(Validator::class);
-        
+
         $this->subject = new MethodValidator(
             $this->schemaValidator
         );
     }
-    
+
     public function testValidateInputThrowsExceptionIfInputDoesNotValidate(): void
     {
         $parameter = ['test' => 'param'];
@@ -39,11 +39,11 @@ class MethodValidatorTest extends MockeryTestCase
         $this->expectException(RequestMalformedException::class);
         $this->expectExceptionMessage('Bad Request');
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
-        
+
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $parameter,
-                Mockery::on(static function($value) use ($schemaParameter): bool {
+                Mockery::on(static function ($value) use ($schemaParameter): bool {
                     return (array) $value === $schemaParameter;
                 })
             )
@@ -66,7 +66,7 @@ class MethodValidatorTest extends MockeryTestCase
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $parameter,
-                Mockery::on(static function($value) use ($schemaParameter): bool {
+                Mockery::on(static function ($value) use ($schemaParameter): bool {
                     return (array) $value === $schemaParameter;
                 })
             )
@@ -94,7 +94,7 @@ class MethodValidatorTest extends MockeryTestCase
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $output,
-                Mockery::on(static function($value) use ($schemaParameter): bool {
+                Mockery::on(static function ($value) use ($schemaParameter): bool {
                     return (array) $value === $schemaParameter;
                 })
             )
@@ -120,7 +120,7 @@ class MethodValidatorTest extends MockeryTestCase
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $output,
-                Mockery::on(static function($value) use ($schemaParameter): bool {
+                Mockery::on(static function ($value) use ($schemaParameter): bool {
                     return (array) $value === $schemaParameter;
                 })
             )

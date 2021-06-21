@@ -10,9 +10,9 @@ class ResponseMalformedExceptionTest extends MockeryTestCase
 {
     /** @var array<string, string> */
     private array $context = ['some' => 'context'];
-    
+
     private ResponseMalformedException $subject;
-    
+
     public function setUp(): void
     {
         $this->subject = new ResponseMalformedException(
@@ -22,7 +22,7 @@ class ResponseMalformedExceptionTest extends MockeryTestCase
             $this->context
         );
     }
-    
+
     public function testGetContextReturnsData(): void
     {
         static::assertSame(

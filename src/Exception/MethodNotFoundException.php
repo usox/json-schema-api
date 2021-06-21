@@ -6,5 +6,4 @@ namespace Usox\JsonSchemaApi\Exception;
 
 class MethodNotFoundException extends ApiException
 {
-
 }

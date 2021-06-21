@@ -20,7 +20,7 @@ use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 final class MethodDispatcher implements MethodDispatcherInterface
 {
     private SchemaLoaderInterface $schemaLoader;
-    
+
     private MethodValidatorInterface $methodValidator;
 
     private MethodProviderInterface $methodProvider;
@@ -37,7 +37,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
 
     /**
      * @return array<mixed, mixed>
-     * 
+     *
      * @throws MethodNotFoundException
      * @throws ApiMethodException
      * @throws RequestMalformedException
@@ -53,7 +53,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
         // Get the method and version from the request
         $methodName = $input->method;
         $version = $input->version;
-        
+
         if ($version !== null) {
             $methodName = sprintf('%s.%d', $methodName, $version);
         }
@@ -65,21 +65,21 @@ final class MethodDispatcher implements MethodDispatcherInterface
                 StatusCode::BAD_REQUEST
             );
         }
-        
+
         $schemaContent = $this->schemaLoader->load($handler->getSchemaFile());
 
         $this->methodValidator->validateInput($schemaContent, $input);
 
         $response = $handler->handle($request, $input->parameter);
-        
+
         /** @var stdClass $decodedResponse */
         $decodedResponse = Validator::arrayToObjectRecursive($response);
-        
+
         $this->methodValidator->validateOutput(
             $schemaContent,
             $decodedResponse
         );
-        
+
         return $response;
     }
 }
