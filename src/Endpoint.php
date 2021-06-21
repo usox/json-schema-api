@@ -97,17 +97,16 @@ final class Endpoint implements
             
             $responseData = '';
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
-        } finally {
-            /** @var string $encodedResponse */
-            $encodedResponse = json_encode($responseData);
-            
-            return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus($statusCode)
-                ->withBody(
-                    $this->streamFactory->createStream($encodedResponse)
-                );
         }
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($statusCode)
+            ->withBody(
+                $this->streamFactory->createStream(
+                    (string) json_encode($responseData)
+                )
+            );
     }
 
     /**
