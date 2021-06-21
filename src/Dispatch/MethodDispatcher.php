@@ -9,6 +9,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
@@ -40,8 +42,9 @@ final class MethodDispatcher implements MethodDispatcherInterface
      * @throws ApiMethodException
      * @throws RequestMalformedException
      * @throws ResponseMalformedException
-     * @throws \Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException
+     * @throws SchemaInvalidException
      * @throws SchemaNotFoundException
+     * @throws SchemaNotLoadableException
      */
     public function dispatch(
         ServerRequestInterface $request,

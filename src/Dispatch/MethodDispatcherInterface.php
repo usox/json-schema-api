@@ -4,11 +4,11 @@ namespace Usox\JsonSchemaApi\Dispatch;
 
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
-use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 
 interface MethodDispatcherInterface
@@ -20,7 +20,7 @@ interface MethodDispatcherInterface
      * @throws ApiMethodException
      * @throws RequestMalformedException
      * @throws ResponseMalformedException
-     * @throws \Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException
+     * @throws SchemaInvalidException
      * @throws SchemaNotFoundException
      */
     public function dispatch(
