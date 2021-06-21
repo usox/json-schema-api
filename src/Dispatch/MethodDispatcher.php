@@ -13,7 +13,6 @@ use Usox\JsonSchemaApi\Exception\ApiMethodException;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
-use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 
 final class MethodDispatcher implements MethodDispatcherInterface
