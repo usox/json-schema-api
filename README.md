@@ -7,7 +7,7 @@
 This library provides a simple way to create a json api using [json-schema](http://json-schema.org/) to validate the request.
 You can leverage most of the input validation tasks (variables types, length/content-constraints, lists containing just certain items, etc.)
 to the json schema validator and work with the data right away.
-
+[![Code Coverage](https://scrutinizer-ci.com/g/usox/json-schema-api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/usox/json-schema-api/?branch=master)
 ## Json-schema
 
 Every method needs a corresponding schema-file which describes, how the request data should like alike.
