@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use JsonSchema\Validator;
+use Opis\JsonSchema\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 use Teapot\StatusCode;
@@ -53,7 +53,7 @@ final class RequestValidator implements RequestValidatorInterface
         );
 
         // Throw exception if the input does not validate against the basic request schema
-        if ($validationResult !== Validator::ERROR_NONE) {
+        if ($validationResult->isValid() === false) {
             throw new RequestMalformedException(
                 'Request is invalid',
                 StatusCode::BAD_REQUEST

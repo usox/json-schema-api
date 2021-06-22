@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use JsonSchema\Validator;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
+use Opis\JsonSchema\ValidationResult;
+use Opis\JsonSchema\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Teapot\StatusCode;
@@ -67,6 +68,7 @@ class RequestValidatorTest extends MockeryTestCase
 
         $stream = Mockery::mock(StreamInterface::class);
         $request = Mockery::mock(ServerRequestInterface::class);
+        $validationResult = Mockery::mock(ValidationResult::class);
 
         $input = ['some' => 'input'];
         $schemaContent = (object) ['some' => 'schema-content'];
@@ -85,7 +87,12 @@ class RequestValidatorTest extends MockeryTestCase
                 })
             )
             ->once()
-            ->andReturn(666);
+            ->andReturn($validationResult);
+
+        $validationResult->shouldReceive('isValid')
+            ->withNoArgs()
+            ->once()
+            ->andReturnFalse();
 
         $request->shouldReceive('getBody')
             ->withNoArgs()
@@ -104,6 +111,7 @@ class RequestValidatorTest extends MockeryTestCase
     {
         $stream = Mockery::mock(StreamInterface::class);
         $request = Mockery::mock(ServerRequestInterface::class);
+        $validationResult = Mockery::mock(ValidationResult::class);
 
         $input = ['some' => 'input'];
         $schemaContent = (object) ['some' => 'schema-content'];
@@ -122,7 +130,12 @@ class RequestValidatorTest extends MockeryTestCase
                 })
             )
             ->once()
-            ->andReturn(Validator::ERROR_NONE);
+            ->andReturn($validationResult);
+
+        $validationResult->shouldReceive('isValid')
+            ->withNoArgs()
+            ->once()
+            ->andReturnTrue();
 
         $request->shouldReceive('getBody')
             ->withNoArgs()

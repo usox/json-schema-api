@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use JsonSchema\Validator;
+use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Errors\ValidationError;
+use Opis\JsonSchema\Validator;
 use stdClass;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
@@ -14,10 +16,14 @@ final class MethodValidator implements MethodValidatorInterface
 {
     private Validator $schemaValidator;
 
+    private ErrorFormatter $errorFormatter;
+
     public function __construct(
-        Validator $schemaValidator
+        Validator $schemaValidator,
+        ErrorFormatter $errorFormatter
     ) {
         $this->schemaValidator = $schemaValidator;
+        $this->errorFormatter = $errorFormatter;
     }
 
     /**
@@ -34,7 +40,7 @@ final class MethodValidator implements MethodValidatorInterface
         );
 
         // Throw exception if the input does not validate against the basic request schema
-        if ($validationResult !== Validator::ERROR_NONE) {
+        if ($validationResult->isValid() === false) {
             throw new RequestMalformedException(
                 'Bad Request',
                 StatusCode::BAD_REQUEST
@@ -57,12 +63,16 @@ final class MethodValidator implements MethodValidatorInterface
             );
 
             // Throw exception if the input does not validate against the basic request schema
-            if ($validationResult !== Validator::ERROR_NONE) {
+            if ($validationResult->isValid() === false) {
+
+                /** @var ValidationError $error */
+                $error = $validationResult->error();
+
                 throw new ResponseMalformedException(
                     'Internal Server Error',
                     StatusCode::INTERNAL_SERVER_ERROR,
                     null,
-                    $this->schemaValidator->getErrors()
+                    $this->errorFormatter->format($error)
                 );
             }
         }

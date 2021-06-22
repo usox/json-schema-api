@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Usox\JsonSchemaApi;
 
 use Http\Discovery\Psr17FactoryDiscovery;
-use JsonSchema\Validator;
+use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -158,7 +159,10 @@ final class Endpoint implements
             ),
             new MethodDispatcher(
                 $schemaLoader,
-                new MethodValidator($schemaValidator),
+                new MethodValidator(
+                    $schemaValidator,
+                    new ErrorFormatter()
+                ),
                 $methodProvider
             ),
             new ResponseBuilder(),

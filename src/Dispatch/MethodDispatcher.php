@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use JsonSchema\Validator;
+use Opis\JsonSchema\Helper;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 use Teapot\StatusCode;
@@ -73,7 +73,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
         $response = $handler->handle($request, $input->parameter);
 
         /** @var stdClass $decodedResponse */
-        $decodedResponse = Validator::arrayToObjectRecursive($response);
+        $decodedResponse = (object) Helper::toJSON($response);
 
         $this->methodValidator->validateOutput(
             $schemaContent,

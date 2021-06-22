@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use JsonSchema\Validator;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
+use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Errors\ValidationError;
+use Opis\JsonSchema\ValidationResult;
+use Opis\JsonSchema\Validator;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
@@ -17,14 +20,18 @@ class MethodValidatorTest extends MockeryTestCase
     /** @var Validator|MockInterface */
     private MockInterface $schemaValidator;
 
+    private MockInterface $errorFormatter;
+
     private MethodValidator $subject;
 
     public function setUp(): void
     {
         $this->schemaValidator = Mockery::mock(Validator::class);
+        $this->errorFormatter = Mockery::mock(ErrorFormatter::class);
 
         $this->subject = new MethodValidator(
-            $this->schemaValidator
+            $this->schemaValidator,
+            $this->errorFormatter
         );
     }
 
@@ -34,7 +41,8 @@ class MethodValidatorTest extends MockeryTestCase
         $schemaParameter = ['schema' => 'param'];
         $input = (object) ['parameter' => $parameter];
         $content = (object) ['properties' => (object) ['parameter' => $schemaParameter]];
-        $validationResult = 666;
+
+        $validationResult = Mockery::mock(ValidationResult::class);
 
         $this->expectException(RequestMalformedException::class);
         $this->expectExceptionMessage('Bad Request');
@@ -50,6 +58,11 @@ class MethodValidatorTest extends MockeryTestCase
             ->once()
             ->andReturn($validationResult);
 
+        $validationResult->shouldReceive('isValid')
+            ->withNoArgs()
+            ->once()
+            ->andReturnFalse();
+
         $this->subject->validateInput(
             $content,
             $input
@@ -63,6 +76,8 @@ class MethodValidatorTest extends MockeryTestCase
         $input = (object) ['parameter' => $parameter];
         $content = (object) ['properties' => (object) ['parameter' => $schemaParameter]];
 
+        $result = Mockery::mock(ValidationResult::class);
+
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $parameter,
@@ -71,7 +86,12 @@ class MethodValidatorTest extends MockeryTestCase
                 })
             )
             ->once()
-            ->andReturn(Validator::ERROR_NONE);
+            ->andReturn($result);
+
+        $result->shouldReceive('isValid')
+            ->withNoArgs()
+            ->once()
+            ->andReturnTrue();
 
         $this->subject->validateInput(
             $content,
@@ -84,8 +104,10 @@ class MethodValidatorTest extends MockeryTestCase
         $output = (object) ['test' => 'param'];
         $schemaParameter = ['schema' => 'param'];
         $content = (object) ['properties' => (object) ['response' => $schemaParameter]];
-        $errors = ['some' => 'error'];
-        $validationResult = 666;
+        $error = ['some' => 'error'];
+
+        $validationResult = Mockery::mock(ValidationResult::class);
+        $validationError = Mockery::mock(ValidationError::class);
 
         $this->expectException(ResponseMalformedException::class);
         $this->expectExceptionMessage('Internal Server Error');
@@ -100,10 +122,20 @@ class MethodValidatorTest extends MockeryTestCase
             )
             ->once()
             ->andReturn($validationResult);
-        $this->schemaValidator->shouldReceive('getErrors')
+
+        $validationResult->shouldReceive('isValid')
             ->withNoArgs()
             ->once()
-            ->andReturn($errors);
+            ->andReturnFalse();
+        $validationResult->shouldReceive('error')
+            ->withNoArgs()
+            ->once()
+            ->andReturn($validationError);
+
+        $this->errorFormatter->shouldReceive('format')
+            ->with($validationError)
+            ->once()
+            ->andReturn($error);
 
         $this->subject->validateOutput(
             $content,
@@ -117,6 +149,8 @@ class MethodValidatorTest extends MockeryTestCase
         $schemaParameter = ['schema' => 'param'];
         $content = (object) ['properties' => (object) ['response' => $schemaParameter]];
 
+        $validationResult = Mockery::mock(ValidationResult::class);
+
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $output,
@@ -125,7 +159,12 @@ class MethodValidatorTest extends MockeryTestCase
                 })
             )
             ->once()
-            ->andReturn(Validator::ERROR_NONE);
+            ->andReturn($validationResult);
+
+        $validationResult->shouldReceive('isValid')
+            ->withNoArgs()
+            ->once()
+            ->andReturnTrue();
 
         $this->subject->validateOutput(
             $content,
