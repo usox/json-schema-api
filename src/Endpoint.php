@@ -39,8 +39,7 @@ final class Endpoint implements
         private UuidFactoryInterface $uuidFactory,
         private StreamFactoryInterface $streamFactory,
         private ?LoggerInterface $logger = null
-    )
-    {
+    ) {
     }
 
     /**

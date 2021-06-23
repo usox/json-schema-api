@@ -47,7 +47,7 @@
   },
   "scripts": {
     "qa": "composer check-cs && composer stan && composer stan",
-    "check-cs": "./vendor/bin/php-cs-fixer fix --dry-run",
+    "check-cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
     "fix-cs": "./vendor/bin/php-cs-fixer fix",
     "test": "./vendor/bin/phpunit tests",
     "stan": "./vendor/bin/phpstan analyse",

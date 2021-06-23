@@ -24,8 +24,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
         private SchemaLoaderInterface $schemaLoader,
         private MethodValidatorInterface $methodValidator,
         private MethodProviderInterface $methodProvider
-    )
-    {
+    ) {
     }
 
     /**
