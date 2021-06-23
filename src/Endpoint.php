@@ -32,32 +32,15 @@ use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 final class Endpoint implements
     EndpointInterface
 {
-    private RequestValidatorInterface $inputValidator;
-
-    private MethodDispatcherInterface $methodRetriever;
-
-    private ResponseBuilderInterface $responseBuilder;
-
-    private UuidFactoryInterface $uuidFactory;
-
-    private StreamFactoryInterface $streamFactory;
-
-    private ?LoggerInterface $logger;
-
     public function __construct(
-        RequestValidatorInterface $inputValidator,
-        MethodDispatcherInterface $methodRetriever,
-        ResponseBuilderInterface $responseBuilder,
-        UuidFactoryInterface $uuidFactory,
-        StreamFactoryInterface $streamFactory,
-        ?LoggerInterface $logger = null
-    ) {
-        $this->inputValidator = $inputValidator;
-        $this->methodRetriever = $methodRetriever;
-        $this->responseBuilder = $responseBuilder;
-        $this->uuidFactory = $uuidFactory;
-        $this->streamFactory = $streamFactory;
-        $this->logger = $logger;
+        private RequestValidatorInterface $inputValidator,
+        private MethodDispatcherInterface $methodRetriever,
+        private ResponseBuilderInterface $responseBuilder,
+        private UuidFactoryInterface $uuidFactory,
+        private StreamFactoryInterface $streamFactory,
+        private ?LoggerInterface $logger = null
+    )
+    {
     }
 
     /**
@@ -113,8 +96,6 @@ final class Endpoint implements
     }
 
     /**
-     * @param Throwable $e
-     * @param UuidInterface $uuid
      * @param array<mixed, mixed> $context
      */
     private function log(

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 use Opis\JsonSchema\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
@@ -13,22 +16,14 @@ use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 
 final class RequestValidator implements RequestValidatorInterface
 {
-    private SchemaLoaderInterface $schemaLoader;
-
-    private Validator $schemaValidator;
-
-    public function __construct(
-        SchemaLoaderInterface $schemaLoader,
-        Validator $schemaValidator
-    ) {
-        $this->schemaLoader = $schemaLoader;
-        $this->schemaValidator = $schemaValidator;
+    public function __construct(private SchemaLoaderInterface $schemaLoader, private Validator $schemaValidator)
+    {
     }
 
     /**
-     * @throws Exception\SchemaInvalidException
-     * @throws Exception\SchemaNotFoundException
-     * @throws Exception\SchemaNotLoadableException
+     * @throws SchemaInvalidException
+     * @throws SchemaNotFoundException
+     * @throws SchemaNotLoadableException
      * @throws JsonInvalidException
      * @throws RequestMalformedException
      */

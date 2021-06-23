@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
+use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Opis\JsonSchema\Helper;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
@@ -19,20 +20,12 @@ use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 
 final class MethodDispatcher implements MethodDispatcherInterface
 {
-    private SchemaLoaderInterface $schemaLoader;
-
-    private MethodValidatorInterface $methodValidator;
-
-    private MethodProviderInterface $methodProvider;
-
     public function __construct(
-        SchemaLoaderInterface $schemaLoader,
-        MethodValidatorInterface $methodValidator,
-        MethodProviderInterface $methodProvider
-    ) {
-        $this->schemaLoader = $schemaLoader;
-        $this->methodValidator = $methodValidator;
-        $this->methodProvider = $methodProvider;
+        private SchemaLoaderInterface $schemaLoader,
+        private MethodValidatorInterface $methodValidator,
+        private MethodProviderInterface $methodProvider
+    )
+    {
     }
 
     /**
@@ -59,7 +52,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
         }
 
         $handler = $this->methodProvider->lookup($methodName);
-        if ($handler === null) {
+        if (!$handler instanceof ApiMethodInterface) {
             throw new MethodNotFoundException(
                 'Method not found',
                 StatusCode::BAD_REQUEST

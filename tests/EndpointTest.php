@@ -116,7 +116,8 @@ class EndpointTest extends MockeryTestCase
         $processedResponse = ['some-processed-response'];
         $uuidValue = 'some-uuid';
 
-        $error = new class($errorMessage, $errorCode) extends ApiMethodException {};
+        $error = new class($errorMessage, $errorCode) extends ApiMethodException {
+        };
 
         $this->requestValidator->shouldReceive('validate')
             ->with($request)
@@ -168,7 +169,8 @@ class EndpointTest extends MockeryTestCase
         $processedResponse = ['some-processed-response'];
         $uuidValue = 'some-uuid';
 
-        $error = new class($errorMessage, $errorCode) extends ApiException {};
+        $error = new class($errorMessage, $errorCode) extends ApiException {
+        };
 
         $this->requestValidator->shouldReceive('validate')
             ->with($request)
@@ -357,14 +359,9 @@ class EndpointTest extends MockeryTestCase
         );
     }
 
-    /**
-     * @param MockInterface $response
-     * @param string|array<mixed, mixed> $responseData
-     * @param int $statusCode
-     */
     private function createResponseExpectations(
         MockInterface $response,
-        $responseData,
+        string|array $responseData,
         int $statusCode
     ): void {
         $stream = Mockery::mock(StreamInterface::class);

@@ -13,8 +13,6 @@ abstract class InternalException extends Exception
     private array $context;
 
     /**
-     * @param string $message
-     * @param int $code
      * @param Throwable|null $previous
      * @param array<mixed, mixed> $context
      */
