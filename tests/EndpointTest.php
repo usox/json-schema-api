@@ -116,7 +116,7 @@ class EndpointTest extends MockeryTestCase
         $processedResponse = ['some-processed-response'];
         $uuidValue = 'some-uuid';
 
-        $error = new class($errorMessage, $errorCode) extends ApiMethodException {
+        $error = new class ($errorMessage, $errorCode) extends ApiMethodException {
         };
 
         $this->requestValidator->shouldReceive('validate')
@@ -169,7 +169,7 @@ class EndpointTest extends MockeryTestCase
         $processedResponse = ['some-processed-response'];
         $uuidValue = 'some-uuid';
 
-        $error = new class($errorMessage, $errorCode) extends ApiException {
+        $error = new class ($errorMessage, $errorCode) extends ApiException {
         };
 
         $this->requestValidator->shouldReceive('validate')
