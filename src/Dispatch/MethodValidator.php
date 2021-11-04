@@ -14,8 +14,10 @@ use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 
 final class MethodValidator implements MethodValidatorInterface
 {
-    public function __construct(private Validator $schemaValidator, private ErrorFormatter $errorFormatter)
-    {
+    public function __construct(
+        private Validator $schemaValidator,
+        private ErrorFormatter $errorFormatter
+    ) {
     }
 
     /**
@@ -45,21 +47,30 @@ final class MethodValidator implements MethodValidatorInterface
      */
     public function validateOutput(
         stdClass $methodSchemaContent,
-        stdClass $output
+        $output
     ): void {
         if (property_exists($methodSchemaContent->properties, 'response') === true) {
+            $data = new stdClass();
+            $data->data = $output;
+
+            // Wrap the response schema
+            $response = (object) [
+                'type' => 'object',
+                'properties' => (object) [
+                    'data' => $methodSchemaContent->properties->response,
+                ],
+                'required' => ['data']
+            ];
+
             // Validate the response against the response definition in method schema
             $validationResult = $this->schemaValidator->validate(
-                $output,
-                $methodSchemaContent->properties->response
+                $data,
+                $response
             );
 
+            $error = $validationResult->error();
             // Throw exception if the input does not validate against the basic request schema
-            if ($validationResult->isValid() === false) {
-
-                /** @var ValidationError $error */
-                $error = $validationResult->error();
-
+            if ($error !== null) {
                 throw new ResponseMalformedException(
                     'Internal Server Error',
                     StatusCode::INTERNAL_SERVER_ERROR,

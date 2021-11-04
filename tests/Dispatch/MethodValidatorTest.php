@@ -52,7 +52,7 @@ class MethodValidatorTest extends MockeryTestCase
             ->with(
                 $parameter,
                 Mockery::on(static function ($value) use ($schemaParameter): bool {
-                    return (array) $value === $schemaParameter;
+                    return json_encode($value) === json_encode($schemaParameter);
                 })
             )
             ->once()
@@ -115,18 +115,24 @@ class MethodValidatorTest extends MockeryTestCase
 
         $this->schemaValidator->shouldReceive('validate')
             ->with(
-                $output,
+                Mockery::on(static function ($value) use ($output): bool {
+                    return json_encode($value) === json_encode(['data' => $output]);
+                }),
                 Mockery::on(static function ($value) use ($schemaParameter): bool {
-                    return (array) $value === $schemaParameter;
+                    $schemaParameter = [
+                        'type' => 'object',
+                        'properties' => [
+                            'data' => $schemaParameter,
+                        ],
+                        'required' => ['data']
+
+                    ];
+                    return json_encode($value) === json_encode($schemaParameter);
                 })
             )
             ->once()
             ->andReturn($validationResult);
 
-        $validationResult->shouldReceive('isValid')
-            ->withNoArgs()
-            ->once()
-            ->andReturnFalse();
         $validationResult->shouldReceive('error')
             ->withNoArgs()
             ->once()
@@ -153,18 +159,28 @@ class MethodValidatorTest extends MockeryTestCase
 
         $this->schemaValidator->shouldReceive('validate')
             ->with(
-                $output,
+                Mockery::on(static function ($value) use ($output): bool {
+                    return json_encode($value) === json_encode(['data' => $output]);
+                }),
                 Mockery::on(static function ($value) use ($schemaParameter): bool {
-                    return (array) $value === $schemaParameter;
+                    $schemaParameter = [
+                        'type' => 'object',
+                        'properties' => [
+                            'data' => $schemaParameter,
+                        ],
+                        'required' => ['data']
+
+                    ];
+                    return json_encode($value) === json_encode($schemaParameter);
                 })
             )
             ->once()
             ->andReturn($validationResult);
 
-        $validationResult->shouldReceive('isValid')
+        $validationResult->shouldReceive('error')
             ->withNoArgs()
             ->once()
-            ->andReturnTrue();
+            ->andReturnNull();
 
         $this->subject->validateOutput(
             $content,

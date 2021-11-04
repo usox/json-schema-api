@@ -64,12 +64,9 @@ final class MethodDispatcher implements MethodDispatcherInterface
 
         $response = $handler->handle($request, $input->parameter);
 
-        /** @var stdClass $decodedResponse */
-        $decodedResponse = (object) Helper::toJSON($response);
-
         $this->methodValidator->validateOutput(
             $schemaContent,
-            $decodedResponse
+            Helper::toJSON($response)
         );
 
         return $response;
