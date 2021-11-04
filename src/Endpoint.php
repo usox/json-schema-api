@@ -50,6 +50,7 @@ final class Endpoint implements
         ResponseInterface $response
     ): ResponseInterface {
         $statusCode = StatusCode::OK;
+        $responseData = null;
 
         try {
             // Process and build the response
@@ -73,25 +74,26 @@ final class Endpoint implements
 
             $this->log($e, $uuid, $e->getContext());
 
-            $responseData = '';
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
             $uuid = $this->uuidFactory->uuid4();
 
             $this->log($e, $uuid);
 
-            $responseData = '';
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
-        return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus($statusCode)
-            ->withBody(
+        if ($responseData !== null) {
+            $response = $response->withBody(
                 $this->streamFactory->createStream(
                     (string) json_encode($responseData)
                 )
             );
+        }
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($statusCode);
     }
 
     /**

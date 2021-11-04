@@ -240,7 +240,7 @@ class EndpointTest extends MockeryTestCase
 
         $this->createResponseExpectations(
             $response,
-            '',
+            null,
             StatusCode::INTERNAL_SERVER_ERROR
         );
 
@@ -287,7 +287,7 @@ class EndpointTest extends MockeryTestCase
 
         $this->createResponseExpectations(
             $response,
-            '',
+            null,
             StatusCode::INTERNAL_SERVER_ERROR
         );
 
@@ -361,15 +361,22 @@ class EndpointTest extends MockeryTestCase
 
     private function createResponseExpectations(
         MockInterface $response,
-        string|array $responseData,
+        string|array|null $responseData,
         int $statusCode
     ): void {
-        $stream = Mockery::mock(StreamInterface::class);
+        if ($responseData !== null) {
+            $stream = Mockery::mock(StreamInterface::class);
 
-        $this->streamFactory->shouldReceive('createStream')
-            ->with(json_encode($responseData))
-            ->once()
-            ->andReturn($stream);
+            $this->streamFactory->shouldReceive('createStream')
+                ->with(json_encode($responseData))
+                ->once()
+                ->andReturn($stream);
+
+            $response->shouldReceive('withBody')
+                ->with($stream)
+                ->once()
+                ->andReturnSelf();
+        }
 
         $response->shouldReceive('withHeader')
             ->with('Content-Type', 'application/json')
@@ -377,10 +384,6 @@ class EndpointTest extends MockeryTestCase
             ->andReturnSelf();
         $response->shouldReceive('withStatus')
             ->with($statusCode)
-            ->once()
-            ->andReturnSelf();
-        $response->shouldReceive('withBody')
-            ->with($stream)
             ->once()
             ->andReturnSelf();
     }
