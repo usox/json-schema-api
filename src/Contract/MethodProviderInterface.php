@@ -3,9 +3,7 @@
 namespace Usox\JsonSchemaApi\Contract;
 
 /**
- * A method provider should perform a lookup an api method by its name.
- * If api versions are used, the version number gets appended to the method name.
- * e.g. someNamespace.someMethod, someNamespace.someMethod.1
+ * Lookup a method name and return the api method handler (e.g. by using a dict<methodName, methodHandler>
  *
  * If the method name does not exist, lookup is expected to return null.
  */

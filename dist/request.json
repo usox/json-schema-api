@@ -8,16 +8,15 @@
       "type": "object",
       "properties": {
         "method": {
-          "type": "string"
+          "type": "string",
+          "description": "The method name"
         },
         "parameter": {
-          "type": "object"
-        },
-        "version": {
-          "type": ["integer", "null"]
+          "type": "object",
+          "description": "The methods parameter"
         }
       }
     }
   },
-  "required": ["method", "parameter", "version"]
+  "required": ["method", "parameter"]
 }

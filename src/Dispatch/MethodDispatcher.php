@@ -42,13 +42,8 @@ final class MethodDispatcher implements MethodDispatcherInterface
         ServerRequestInterface $request,
         stdClass $input
     ): array {
-        // Get the method and version from the request
+        // Get the method from the request and perform lookup
         $methodName = $input->method;
-        $version = $input->version;
-
-        if ($version !== null) {
-            $methodName = sprintf('%s.%d', $methodName, $version);
-        }
 
         $handler = $this->methodProvider->lookup($methodName);
         if (!$handler instanceof ApiMethodInterface) {

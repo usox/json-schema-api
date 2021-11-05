@@ -48,9 +48,8 @@ class MethodDispatcherTest extends MockeryTestCase
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
 
         $method = 'some-method';
-        $version = null;
 
-        $input = ['method' => $method, 'version' => $version];
+        $input = ['method' => $method];
 
         $this->methodProvider->shouldReceive('lookup')
             ->with($method)
@@ -66,13 +65,12 @@ class MethodDispatcherTest extends MockeryTestCase
     public function testDispatchReturnsHandler(): void
     {
         $method = 'some-method';
-        $version = 666;
         $result = ['some-result'];
         $parameter = (object) ['some-parameter'];
         $schemaContent = (object) ['some' => 'schema-content'];
         $schemaFilePath = 'some-path';
 
-        $input = (object) ['method' => $method, 'version' => $version, 'parameter' => $parameter];
+        $input = (object) ['method' => $method, 'parameter' => $parameter];
 
         $request = Mockery::mock(ServerRequestInterface::class);
         $handler = Mockery::mock(ApiMethodInterface::class);
@@ -88,7 +86,7 @@ class MethodDispatcherTest extends MockeryTestCase
             ->andReturn($schemaContent);
 
         $this->methodProvider->shouldReceive('lookup')
-            ->with(sprintf('%s.%d', $method, $version))
+            ->with($method)
             ->once()
             ->andReturn($handler);
 

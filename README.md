@@ -12,7 +12,7 @@ to the json schema validator and work with the data right away.
 Every method needs a corresponding schema-file which describes, how the request data should like alike.
 You can find a simple example in the `example/schema`-folder.
 
-Every request has also to follow a basic schema (see `dist/request.json`) which contains informations about the method and the methods version.
+Every request has also to follow a basic schema (see `dist/request.json`) which contains informations about the method.
 
 ## Requirements
 
@@ -99,5 +99,5 @@ Just cd to the example-folder and fire up the the php internal webserver `php -S
 Now you can send `POST`-Requests to the api like this curl-request.
 
 ```shell script
-curl -X POST -d '{"method": "beerlist", "version": null, "parameter": {"test1": "foobar", "test2": 666}}' "http://localhost:8888"
+curl -X POST -d '{"method": "beerlist", "parameter": {"test1": "foobar", "test2": 666}}' "http://localhost:8888"
 ```
