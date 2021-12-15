@@ -26,11 +26,10 @@ composer require usox/json-schema-api
 
 ## Usage
 
-Just use the factory method to create the endpoint. The factory performs
-an autodiscovery to find a psr17 stream factory, but you can provide the factory
-as parameter in the factory method.
+Just use the factory method to create the endpoint. The factory automatically searches for a existing psr17 stream factory implementation,
+but you can also provide a factory instance when calling the method.
 
-Get your method-provider ready (see below) and call the `factory`-method on the endpoint to retrieve an working instance:
+Get your method-provider ready (see below) and call the `factory`-method on the endpoint to retrieve a working instance:
 
 The serve method requires a psr request and returns a psr response.
 ```php
@@ -50,8 +49,7 @@ The endpoint class implements the [PSR15](https://www.php-fig.org/psr/psr-15/) `
 
 ### MethodProvider
 
-First, your `MethodProvider` needs to be defined. This class is the source for your api methods - 
-this could be a simple array, a DI-Container, etc. The class has to implement `Usox\JsonSchemApi\Contract\MethodProviderInterface`.
+The `MethodProvider` is the source for your api methods - this could be a simple array, a DI-Container, etc. The class has to implement `Usox\JsonSchemApi\Contract\MethodProviderInterface`.
 
 ```php
 class MyMethodProvider implements \Usox\JsonSchemaApi\Contract\MethodProviderInterface
@@ -93,11 +91,29 @@ class BeerlistMethod implements \Usox\JsonSchemaApi\Contract\ApiMethodInterface
 ```
 
 ## Example
+
 You can find a working example in the `example`-folder.
 
 Just cd to the example-folder and fire up the the php internal webserver `php -S localhost:8888`.
-Now you can send `POST`-Requests to the api like this curl-request.
+Now you can send `POST`-Requests to the api like this using curl.
 
 ```shell script
 curl -X POST -d '{"method": "beerlist", "parameter": {"test1": "foobar", "test2": 666}}' "http://localhost:8888"
 ```
+
+## Error-Handling
+
+Basically there are three types of errors. All of them get logged.
+
+### ApiExceptions
+If a handler throws an exception which extends the `ApiException` exception class, the api will
+return a `Bad Request (400)` response including an error message (the exception message) and an error code for reference
+within a json response.
+
+### InternalException
+Internal errors, like non-existing schema files, invalid schemas and such, will return a `Internal Server Error (500)` response.
+
+In Addition, optionally available context information within the exception will be logged, too.
+
+### Throwables
+Any Throwables which are thrown within an api handler, will be catched, logged and return a `Internal Server Error (500)` response.

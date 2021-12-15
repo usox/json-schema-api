@@ -70,15 +70,18 @@ final class Endpoint implements
 
             $statusCode = StatusCode::BAD_REQUEST;
         } catch (InternalException $e) {
-            $uuid = $this->uuidFactory->uuid4();
-
-            $this->logError($e, $uuid, $e->getContext());
+            $this->logError(
+                $e,
+                $this->uuidFactory->uuid4(),
+                $e->getContext()
+            );
 
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
-            $uuid = $this->uuidFactory->uuid4();
-
-            $this->logError($e, $uuid);
+            $this->logError(
+                $e,
+                $this->uuidFactory->uuid4()
+            );
 
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         }
