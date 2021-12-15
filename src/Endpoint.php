@@ -63,7 +63,7 @@ final class Endpoint implements
         } catch (ApiException $e) {
             $uuid = $this->uuidFactory->uuid4();
 
-            $this->log($e, $uuid);
+            $this->logError($e, $uuid);
 
             // Build an error response
             $responseData = $this->responseBuilder->buildErrorResponse($e, $uuid);
@@ -72,13 +72,13 @@ final class Endpoint implements
         } catch (InternalException $e) {
             $uuid = $this->uuidFactory->uuid4();
 
-            $this->log($e, $uuid, $e->getContext());
+            $this->logError($e, $uuid, $e->getContext());
 
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
             $uuid = $this->uuidFactory->uuid4();
 
-            $this->log($e, $uuid);
+            $this->logError($e, $uuid);
 
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         }
@@ -99,22 +99,20 @@ final class Endpoint implements
     /**
      * @param array<mixed, mixed> $context
      */
-    private function log(
+    private function logError(
         Throwable $e,
         UuidInterface $uuid,
         array $context = []
     ): void {
-        if ($this->logger !== null) {
-            $this->logger->error(
-                sprintf('%s (%d)', $e->getMessage(), $e->getCode()),
-                [
-                    'id' => $uuid->toString(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'context' => $context
-                ]
-            );
-        }
+        $this->logger?->error(
+            sprintf('%s (%d)', $e->getMessage(), $e->getCode()),
+            [
+                'id' => $uuid->toString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'context' => $context
+            ]
+        );
     }
 
     /**
@@ -145,7 +143,8 @@ final class Endpoint implements
                     $schemaValidator,
                     new ErrorFormatter()
                 ),
-                $methodProvider
+                $methodProvider,
+                $logger,
             ),
             new ResponseBuilder(),
             new UuidFactory(),

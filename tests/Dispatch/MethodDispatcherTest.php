@@ -8,6 +8,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
@@ -24,6 +25,8 @@ class MethodDispatcherTest extends MockeryTestCase
     /** @var MethodProviderInterface|MockInterface */
     private MockInterface $methodProvider;
 
+    private MockInterface $logger;
+
     private MethodDispatcher $subject;
 
     public function setUp(): void
@@ -31,11 +34,13 @@ class MethodDispatcherTest extends MockeryTestCase
         $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
         $this->methodValidator = Mockery::mock(MethodValidatorInterface::class);
         $this->methodProvider = Mockery::mock(MethodProviderInterface::class);
+        $this->logger = Mockery::mock(LoggerInterface::class);
 
         $this->subject = new MethodDispatcher(
             $this->schemaLoader,
             $this->methodValidator,
-            $this->methodProvider
+            $this->methodProvider,
+            $this->logger
         );
     }
 
@@ -99,6 +104,15 @@ class MethodDispatcherTest extends MockeryTestCase
                 Mockery::on(function ($param) use ($result): bool {
                     return (array) $param == $result;
                 })
+            )
+            ->once();
+
+        $this->logger->shouldReceive('debug')
+            ->with(
+                'Method call: '.$method,
+                [
+                    'input' => $input->parameter
+                ]
             )
             ->once();
 

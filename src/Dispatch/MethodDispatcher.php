@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
+use Psr\Log\LoggerInterface;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Opis\JsonSchema\Helper;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +24,8 @@ final class MethodDispatcher implements MethodDispatcherInterface
     public function __construct(
         private SchemaLoaderInterface $schemaLoader,
         private MethodValidatorInterface $methodValidator,
-        private MethodProviderInterface $methodProvider
+        private MethodProviderInterface $methodProvider,
+        private ?LoggerInterface $logger
     ) {
     }
 
@@ -56,6 +58,13 @@ final class MethodDispatcher implements MethodDispatcherInterface
         $schemaContent = $this->schemaLoader->load($handler->getSchemaFile());
 
         $this->methodValidator->validateInput($schemaContent, $input);
+
+        $this->logger?->debug(
+            'Method call: '.$methodName,
+            [
+                'input' => $input->parameter
+            ]
+        );
 
         $response = $handler->handle($request, $input->parameter);
 
