@@ -29,6 +29,9 @@ use Usox\JsonSchemaApi\Dispatch\SchemaLoader;
 use Usox\JsonSchemaApi\Response\ResponseBuilder;
 use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
+/**
+ * @see Endpoint::factory()
+ */
 final class Endpoint implements
     EndpointInterface
 {

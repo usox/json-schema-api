@@ -10,14 +10,7 @@ use Usox\JsonSchemaApi\Endpoint;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
-    $_SERVER,
-    $_GET,
-    $_POST,
-    $_COOKIE,
-    $_FILES
-);
-
+// API Handler which actually contains the business logic
 final class BeerlistMethod implements ApiMethodInterface
 {
     public function handle(
@@ -41,8 +34,8 @@ final class BeerlistMethod implements ApiMethodInterface
     }
 }
 
-$methodContainer = new class implements MethodProviderInterface {
-
+// MethodProvider which performs the lookup for a certain method name
+$methodContainer = new class () implements MethodProviderInterface {
     /** @var array<string, ApiMethodInterface> */
     private array $methods;
 
@@ -59,6 +52,17 @@ $methodContainer = new class implements MethodProviderInterface {
     }
 };
 
+
+// Build a request instance
+$request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_FILES
+);
+
+
 $endpoint = Endpoint::factory(
     $methodContainer
 );
@@ -66,6 +70,9 @@ $response = $endpoint->serve(
     $request,
     (new ResponseFactory())->createResponse()
 );
+
+
+// Just boilerplate code. Any framework (like slim) will to that for you
 
 $statusLine = sprintf(
     'HTTP/%s %s %s',

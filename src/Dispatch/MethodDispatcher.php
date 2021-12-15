@@ -19,6 +19,13 @@ use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 
+/**
+ * Handles the life cycle of a method call
+ * - load method handler
+ * - validate input
+ * - execute handler
+ * - validate output
+ */
 final class MethodDispatcher implements MethodDispatcherInterface
 {
     public function __construct(

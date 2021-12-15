@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Usox\JsonSchemaApi\Dispatch;
 
 use Opis\JsonSchema\Errors\ErrorFormatter;
-use Opis\JsonSchema\Errors\ValidationError;
 use Opis\JsonSchema\Validator;
 use stdClass;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 
+/**
+ * Validates input and output against the json schema to ensure valid requests/responses
+ */
 final class MethodValidator implements MethodValidatorInterface
 {
     public function __construct(

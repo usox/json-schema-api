@@ -10,7 +10,7 @@ use Throwable;
 final class ResponseBuilder implements ResponseBuilderInterface
 {
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array{error: array{message: string, code: int, id: string}}
      */
     public function buildErrorResponse(
         Throwable $e,
@@ -28,7 +28,7 @@ final class ResponseBuilder implements ResponseBuilderInterface
     /**
      * @param array<mixed, mixed> $data
      *
-     * @return array<string, array<mixed, mixed>>
+     * @return array{data: array<mixed, mixed>}
      */
     public function buildResponse(array $data): array
     {

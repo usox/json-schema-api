@@ -10,6 +10,9 @@ use stdClass;
 use Teapot\StatusCode;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
 
+/**
+ * Lookup the schema and load its contents
+ */
 final class SchemaLoader implements SchemaLoaderInterface
 {
     /**
