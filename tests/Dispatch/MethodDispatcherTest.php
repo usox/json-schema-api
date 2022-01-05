@@ -53,13 +53,24 @@ class MethodDispatcherTest extends MockeryTestCase
         $this->expectExceptionCode(StatusCode::BAD_REQUEST);
 
         $method = 'some-method';
+        $parameter = (object) ['some-parameter'];
 
-        $input = ['method' => $method];
+        $input = ['method' => $method, 'parameter' => $parameter];
 
         $this->methodProvider->shouldReceive('lookup')
             ->with($method)
             ->once()
             ->andReturnNull();
+
+        $this->logger->shouldReceive('debug')
+            ->with(
+                'Api method call',
+                [
+                    'method' => $method,
+                    'input' => $parameter
+                ]
+            )
+            ->once();
 
         $this->subject->dispatch(
             $request,
@@ -107,10 +118,19 @@ class MethodDispatcherTest extends MockeryTestCase
             )
             ->once();
 
+        $this->logger->shouldReceive('info')
+            ->with(
+                'Api method call',
+                [
+                    'method' => $method,
+                ]
+            )
+            ->once();
         $this->logger->shouldReceive('debug')
             ->with(
-                'Method call: '.$method,
+                'Api method call',
                 [
+                    'method' => $method,
                     'input' => $input->parameter
                 ]
             )

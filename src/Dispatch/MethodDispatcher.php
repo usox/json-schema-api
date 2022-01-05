@@ -54,6 +54,14 @@ final class MethodDispatcher implements MethodDispatcherInterface
         // Get the method from the request and perform lookup
         $methodName = $input->method;
 
+        $this->logger?->debug(
+            'Api method call',
+            [
+                'method' => $methodName,
+                'input' => $input->parameter
+            ]
+        );
+
         $handler = $this->methodProvider->lookup($methodName);
         if (!$handler instanceof ApiMethodInterface) {
             throw new MethodNotFoundException(
@@ -66,10 +74,10 @@ final class MethodDispatcher implements MethodDispatcherInterface
 
         $this->methodValidator->validateInput($schemaContent, $input);
 
-        $this->logger?->debug(
-            'Method call: '.$methodName,
+        $this->logger?->info(
+            'Api method call',
             [
-                'input' => $input->parameter
+                'method' => $methodName,
             ]
         );
 
