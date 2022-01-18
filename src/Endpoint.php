@@ -123,8 +123,8 @@ final class Endpoint implements
 
     /**
      * Builds the endpoint.
-     * The StreamFactory can be omitted, the endpoint will search
-     * for any existing PSR17 implementations
+     * The StreamFactory may be omitted, the endpoint will try to autodetect
+     * an existing PSR17 implementations
      */
     public static function factory(
         MethodProviderInterface $methodProvider,

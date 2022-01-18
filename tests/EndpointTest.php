@@ -315,6 +315,16 @@ class EndpointTest extends MockeryTestCase
         );
     }
 
+    public function testFactoryReturnsInstanceUsingAutoDetection(): void
+    {
+        static::assertInstanceOf(
+            Endpoint::class,
+            Endpoint::factory(
+                Mockery::mock(MethodProviderInterface::class),
+            )
+        );
+    }
+
     public function testProcessWorksWithMiddleware(): void
     {
         $request = Mockery::mock(ServerRequestInterface::class);
