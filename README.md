@@ -7,12 +7,17 @@
 This library provides a simple way to create a json api using [json-schema](http://json-schema.org/) to validate the request.
 You can leverage most of the input validation tasks (variables types, length/content-constraints, lists containing just certain items, etc.)
 to the json schema validator and work with the data right away.
-## Json-schema
+
+## Json-Schema
 
 Every method needs a corresponding schema-file which describes, how the request data should like alike.
 You can find a simple example in the `example/schema`-folder.
 
 Every request has also to follow a basic schema (see `dist/request.json`) which contains informations about the method.
+
+## Validation
+
+Every request and the generated response will be validated against the provided schema.
 
 ## Requirements
 
@@ -69,9 +74,9 @@ class MyMethodProvider implements \Usox\JsonSchemaApi\Contract\MethodProviderInt
 
 ### API-Method
 
-The `lookup`-method in the MethodProvider has to return an instance of `Usox\JsonSchemaApi\Contract\ApiMethodInterface`.
+The `lookup`-method in the MethodProvider must return an instance of `Usox\JsonSchemaApi\Contract\ApiMethodInterface`.
 
-Every api method handler has to define two methods:
+Every api method handler must define at least those two methods:
 - The `handle` method which processes the request and returns the result
 - The `getSchemaFile` method which returns the path to the schema file which is used to validate the request
 
@@ -111,9 +116,11 @@ return a `Bad Request (400)` response including an error message (the exception 
 within a json response.
 
 ### InternalException
-Internal errors, like non-existing schema files, invalid schemas and such, will return a `Internal Server Error (500)` response.
+Internal errors, like non-existing schema files, invalid schemas and such, will return a `Internal Server Error (500)`
+response and create a log entry (if a logger is provided).
 
-In Addition, optionally available context information within the exception will be logged, too.
+In addition, optionally available context information within the exception will be logged, too.
 
-### Throwables
-Any Throwables which are thrown within an api handler, will be catched, logged and return a `Internal Server Error (500)` response.
+### Throwable
+
+Any Throwable which are thrown within an api handler, will be catched, logged and return a `Internal Server Error (500)` response.

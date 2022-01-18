@@ -17,12 +17,12 @@ interface MethodValidatorInterface
     ): void;
 
     /**
-     * @param stdClass|array<mixed> $output
+     * @param array<mixed> $output
      *
      * @throws ResponseMalformedException
      */
     public function validateOutput(
         stdClass $methodSchemaContent,
-        $output
+        array $output
     ): void;
 }

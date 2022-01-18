@@ -46,6 +46,7 @@ final class RequestValidator implements RequestValidatorInterface
 
         $fileContent = $this->schemaLoader->load(__DIR__ . '/../../dist/request.json');
 
+        /** @var stdClass $decodedInput */
         // First, validate the input against the basic request schema
         $validationResult = $this->schemaValidator->validate(
             $decodedInput,

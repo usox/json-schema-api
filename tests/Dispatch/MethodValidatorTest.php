@@ -101,7 +101,7 @@ class MethodValidatorTest extends MockeryTestCase
 
     public function testValidateOutputThrowsExceptionIfOutputDoesNotValidate(): void
     {
-        $output = (object) ['test' => 'param'];
+        $output = ['test' => 'param'];
         $schemaParameter = ['schema' => 'param'];
         $content = (object) ['properties' => (object) ['response' => $schemaParameter]];
         $error = ['some' => 'error'];
@@ -151,7 +151,7 @@ class MethodValidatorTest extends MockeryTestCase
 
     public function testValidateOutputValidates(): void
     {
-        $output = (object) ['test' => 'param'];
+        $output = ['test' => 'param'];
         $schemaParameter = ['schema' => 'param'];
         $content = (object) ['properties' => (object) ['response' => $schemaParameter]];
 

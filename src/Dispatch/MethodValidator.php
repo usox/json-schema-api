@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Usox\JsonSchemaApi\Dispatch;
 
 use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Helper;
 use Opis\JsonSchema\Validator;
 use stdClass;
 use Teapot\StatusCode;
@@ -45,15 +46,17 @@ final class MethodValidator implements MethodValidatorInterface
     }
 
     /**
+     * @param array<mixed> $output
+     *
      * @throws ResponseMalformedException
      */
     public function validateOutput(
         stdClass $methodSchemaContent,
-        $output
+        array $output
     ): void {
         if (property_exists($methodSchemaContent->properties, 'response') === true) {
             $data = new stdClass();
-            $data->data = $output;
+            $data->data = Helper::toJSON($output);
 
             // Wrap the response schema
             $response = (object) [

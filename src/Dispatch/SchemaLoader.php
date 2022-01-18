@@ -51,6 +51,7 @@ final class SchemaLoader implements SchemaLoaderInterface
             );
         }
 
+        /** @var stdClass $methodSchemaContent */
         return $methodSchemaContent;
     }
 }

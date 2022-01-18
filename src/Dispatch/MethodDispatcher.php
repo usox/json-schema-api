@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use Psr\Log\LoggerInterface;
-use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
-use Opis\JsonSchema\Helper;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use stdClass;
 use Teapot\StatusCode;
+use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 use Usox\JsonSchemaApi\Exception\ApiMethodException;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
-use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 
 /**
  * Handles the life cycle of a method call
@@ -85,7 +84,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
 
         $this->methodValidator->validateOutput(
             $schemaContent,
-            Helper::toJSON($response)
+            $response
         );
 
         return $response;
