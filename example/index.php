@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Laminas\Diactoros\ResponseFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
@@ -63,17 +62,10 @@ $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 );
 
 
-$endpoint = Endpoint::factory(
-    $methodContainer
-);
-$response = $endpoint->serve(
-    $request,
-    (new ResponseFactory())->createResponse()
-);
-
+// Create the endpoint and retrieve the response
+$response = Endpoint::factory($methodContainer)->serve($request);
 
 // Just boilerplate code. Any framework (like slim) will to that for you
-
 $statusLine = sprintf(
     'HTTP/%s %s %s',
     $response->getProtocolVersion(),
