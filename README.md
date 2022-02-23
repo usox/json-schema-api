@@ -50,7 +50,7 @@ $endpoint->serve(
 
 #### Optional: PSR15 Middleware
 
-The endpoint class implements the [PSR15](https://www.php-fig.org/psr/psr-15/) `MiddlewareInterface`.
+The endpoint class implements the [PSR15](https://www.php-fig.org/psr/psr-15/) `RequestHandlerInterface`.
 
 ### MethodProvider
 

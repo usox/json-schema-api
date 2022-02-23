@@ -7,10 +7,10 @@ namespace Usox\JsonSchemaApi;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Validator;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
@@ -18,14 +18,14 @@ use Ramsey\Uuid\UuidInterface;
 use Teapot\StatusCode;
 use Throwable;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
-use Usox\JsonSchemaApi\Exception\ApiException;
-use Usox\JsonSchemaApi\Exception\InternalException;
 use Usox\JsonSchemaApi\Dispatch\MethodDispatcher;
 use Usox\JsonSchemaApi\Dispatch\MethodDispatcherInterface;
 use Usox\JsonSchemaApi\Dispatch\MethodValidator;
 use Usox\JsonSchemaApi\Dispatch\RequestValidator;
 use Usox\JsonSchemaApi\Dispatch\RequestValidatorInterface;
 use Usox\JsonSchemaApi\Dispatch\SchemaLoader;
+use Usox\JsonSchemaApi\Exception\ApiException;
+use Usox\JsonSchemaApi\Exception\InternalException;
 use Usox\JsonSchemaApi\Response\ResponseBuilder;
 use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
@@ -41,16 +41,16 @@ final class Endpoint implements
         private ResponseBuilderInterface $responseBuilder,
         private UuidFactoryInterface $uuidFactory,
         private StreamFactoryInterface $streamFactory,
+        private ResponseFactoryInterface $responseFactory,
         private ?LoggerInterface $logger = null
     ) {
     }
 
     /**
-     * Try to execute the api handler and build the response
+     * Execute the api handler and build the response
      */
     public function serve(
         ServerRequestInterface $request,
-        ResponseInterface $response
     ): ResponseInterface {
         $statusCode = StatusCode::OK;
         $responseData = null;
@@ -89,6 +89,8 @@ final class Endpoint implements
             $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
+        $response = $this->responseFactory->createResponse($statusCode);
+
         if ($responseData !== null) {
             $response = $response->withBody(
                 $this->streamFactory->createStream(
@@ -99,7 +101,7 @@ final class Endpoint implements
 
         return $response
             ->withHeader('Content-Type', 'application/json')
-            ->withStatus($statusCode);
+            ;
     }
 
     /**
@@ -123,12 +125,13 @@ final class Endpoint implements
 
     /**
      * Builds the endpoint.
-     * The StreamFactory may be omitted, the endpoint will try to autodetect
-     * an existing PSR17 implementations
+     *
+     * The factories may be omitted, the endpoint will try to autodetect existing PSR17 implementations
      */
     public static function factory(
         MethodProviderInterface $methodProvider,
         ?StreamFactoryInterface $streamFactory = null,
+        ?ResponseFactoryInterface $responseFactory = null,
         ?LoggerInterface $logger = null
     ): EndpointInterface {
         $schemaValidator = new Validator();
@@ -136,6 +139,9 @@ final class Endpoint implements
 
         if ($streamFactory === null) {
             $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
+        }
+        if ($responseFactory === null) {
+            $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
         }
 
         return new self(
@@ -155,17 +161,16 @@ final class Endpoint implements
             new ResponseBuilder(),
             new UuidFactory(),
             $streamFactory,
+            $responseFactory,
             $logger
         );
     }
 
-    public function process(
+    public function handle(
         ServerRequestInterface $request,
-        RequestHandlerInterface $handler
     ): ResponseInterface {
         return $this->serve(
             $request,
-            $handler->handle($request)
         );
     }
 }

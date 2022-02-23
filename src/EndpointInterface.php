@@ -4,13 +4,12 @@ namespace Usox\JsonSchemaApi;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 interface EndpointInterface extends
-    MiddlewareInterface
+   RequestHandlerInterface
 {
     public function serve(
         ServerRequestInterface $request,
-        ResponseInterface $response
     ): ResponseInterface;
 }
