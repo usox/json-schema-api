@@ -10,7 +10,7 @@ to the json schema validator and work with the data right away.
 
 ## Json-Schema
 
-Every method needs a corresponding schema-file which describes, how the request data should like alike.
+Every method needs a corresponding schema-file which describes, how the request data should look alike.
 You can find a simple example in the `example/schema`-folder.
 
 Every request has also to follow a basic schema (see `dist/request.json`) which contains informations about the method.
