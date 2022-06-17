@@ -13,7 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest']
-        php-versions: [8.0, 8.1]
+        php-versions: [8.0, 8.1, 8.2]
+    continue-on-error: ${{ matrix.php == '8.2' }}
     steps:
       - uses: actions/checkout@v2
 
@@ -35,7 +36,12 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
+        if: ${{ matrix.php != '8.2' }}
         run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Install dependencies
+        if: ${{ matrix.php == '8.2' }}
+        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-req=php
 
       - name: Run test suite
         run: composer run-script qa
