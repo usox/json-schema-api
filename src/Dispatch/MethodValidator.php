@@ -37,7 +37,7 @@ final class MethodValidator implements MethodValidatorInterface
         );
 
         // Throw exception if the input does not validate against the basic request schema
-        if ($validationResult->isValid() === false) {
+        if (!$validationResult->isValid()) {
             throw new RequestMalformedException(
                 'Bad Request',
                 StatusCode::BAD_REQUEST
@@ -54,7 +54,7 @@ final class MethodValidator implements MethodValidatorInterface
         stdClass $methodSchemaContent,
         array $output
     ): void {
-        if (property_exists($methodSchemaContent->properties, 'response') === true) {
+        if (property_exists($methodSchemaContent->properties, 'response')) {
             $data = new stdClass();
             $data->data = Helper::toJSON($output);
 

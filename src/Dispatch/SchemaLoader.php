@@ -25,7 +25,7 @@ final class SchemaLoader implements SchemaLoaderInterface
     public function load(
         string $schemaFilePath
     ): stdClass {
-        if (file_exists($schemaFilePath) === false) {
+        if (!file_exists($schemaFilePath)) {
             throw new SchemaNotFoundException(
                 sprintf('Schema file `%s` not found', $schemaFilePath),
                 StatusCode::INTERNAL_SERVER_ERROR

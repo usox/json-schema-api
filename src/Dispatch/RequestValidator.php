@@ -54,7 +54,7 @@ final class RequestValidator implements RequestValidatorInterface
         );
 
         // Throw exception if the input does not validate against the basic request schema
-        if ($validationResult->isValid() === false) {
+        if (!$validationResult->isValid()) {
             throw new RequestMalformedException(
                 'Request is invalid',
                 StatusCode::BAD_REQUEST
