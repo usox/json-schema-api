@@ -101,7 +101,7 @@ final class Endpoint implements
 
         return $response
             ->withHeader('Content-Type', 'application/json')
-            ;
+        ;
     }
 
     /**

@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 interface EndpointInterface extends
-   RequestHandlerInterface
+    RequestHandlerInterface
 {
     public function serve(
         ServerRequestInterface $request,
