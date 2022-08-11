@@ -18,7 +18,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->import(resource: SetList::CODE_QUALITY);
     $rectorConfig->import(SetList::DEAD_CODE);
-    $rectorConfig->import(SetList::PHP_80);
+    $rectorConfig->import(SetList::PHP_81);
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
 
     $services = $rectorConfig->services();

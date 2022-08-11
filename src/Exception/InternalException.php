@@ -17,7 +17,7 @@ abstract class InternalException extends Exception
         string $message,
         int $code,
         Throwable $previous = null,
-        private array $context = []
+        private readonly array $context = []
     ) {
         parent::__construct($message, $code, $previous);
     }

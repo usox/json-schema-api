@@ -20,8 +20,8 @@ use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 final class RequestValidator implements RequestValidatorInterface
 {
     public function __construct(
-        private SchemaLoaderInterface $schemaLoader,
-        private Validator $schemaValidator,
+        private readonly SchemaLoaderInterface $schemaLoader,
+        private readonly Validator $schemaValidator,
     ) {
     }
 

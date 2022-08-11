@@ -18,8 +18,8 @@ use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 final class MethodValidator implements MethodValidatorInterface
 {
     public function __construct(
-        private Validator $schemaValidator,
-        private ErrorFormatter $errorFormatter
+        private readonly Validator $schemaValidator,
+        private readonly ErrorFormatter $errorFormatter
     ) {
     }
 

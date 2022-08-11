@@ -28,10 +28,10 @@ use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 final class MethodDispatcher implements MethodDispatcherInterface
 {
     public function __construct(
-        private SchemaLoaderInterface $schemaLoader,
-        private MethodValidatorInterface $methodValidator,
-        private MethodProviderInterface $methodProvider,
-        private ?LoggerInterface $logger
+        private readonly SchemaLoaderInterface $schemaLoader,
+        private readonly MethodValidatorInterface $methodValidator,
+        private readonly MethodProviderInterface $methodProvider,
+        private readonly ?LoggerInterface $logger
     ) {
     }
 
