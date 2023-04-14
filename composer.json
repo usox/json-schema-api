@@ -49,11 +49,21 @@
     }
   },
   "scripts": {
-    "qa": "composer check-cs && composer stan && composer test",
-    "check-cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
-    "fix-cs": "./vendor/bin/php-cs-fixer fix",
-    "test": "./vendor/bin/phpunit tests",
-    "stan": "./vendor/bin/phpstan analyse",
-    "coverage": "./vendor/bin/phpunit --warm-coverage-cache tests && XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html build/coverage tests"
+    "qa": [
+      "@composer check-cs",
+      "@composer stan",
+      "@composer rector:dry",
+      "@composer test"
+    ],
+    "check-cs": "php-cs-fixer fix --dry-run --diff",
+    "fix-cs": "php-cs-fixer fix",
+    "test": "phpunit tests",
+    "stan": "phpstan analyse",
+    "rector:dry": "rector process -n",
+    "rector:fix": "rector process",
+    "coverage": [
+      "phpunit --warm-coverage-cache tests && XDEBUG_MODE=coverage",
+      "phpunit --coverage-html build/coverage tests"
+    ]
   }
 }
