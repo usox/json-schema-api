@@ -33,14 +33,14 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0",
-    "laminas/laminas-diactoros": "^2.4",
+    "laminas/laminas-diactoros": "^3",
     "mikey179/vfsstream": "^1.6",
     "mockery/mockery": "^1.4",
     "phpstan/phpstan": "^1",
     "phpstan/phpstan-mockery": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^10",
-    "rector/rector": "^0.15"
+    "rector/rector": "^0.16"
   },
   "config": {
     "sort-packages": true,
