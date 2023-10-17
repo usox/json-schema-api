@@ -16,13 +16,12 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/tests'
     ]);
 
-    $rectorConfig->import(resource: SetList::CODE_QUALITY);
+    $rectorConfig->import(SetList::CODE_QUALITY);
     $rectorConfig->import(SetList::DEAD_CODE);
     $rectorConfig->import(SetList::PHP_81);
 
-    $services = $rectorConfig->services();
-    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
-    $services->set(RemoveUnusedVariableInCatchRector::class);
+    $rectorConfig->rule(ClassPropertyAssignToConstructorPromotionRector::class);
+    $rectorConfig->rule(RemoveUnusedVariableInCatchRector::class);
 
     $rectorConfig->skip([
         FlipTypeControlToUseExclusiveTypeRector::class,
