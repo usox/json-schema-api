@@ -9,7 +9,14 @@ use Usox\JsonSchemaApi\Endpoint;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// API Handler which actually contains the business logic
+/**
+ * API Handler which actually contains the business logic
+ *
+ * @implements ApiMethodInterface<
+ *  object&stdClass,
+ *  array{beer_style_list: list<string>}
+ * >
+ */
 final class BeerlistMethod implements ApiMethodInterface
 {
     public function handle(

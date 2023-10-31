@@ -4,7 +4,10 @@
          backupGlobals="true"
          bootstrap="tests/bootstrap.php"
          colors="true"
-         cacheDirectory="build/.phpunit.cache">
+         cacheDirectory="build/.phpunit.cache"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+>
   <coverage/>
   <source>
     <include>
