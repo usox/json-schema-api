@@ -11,7 +11,7 @@ use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Errors\ValidationError;
 use Opis\JsonSchema\ValidationResult;
 use Opis\JsonSchema\Validator;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 
@@ -46,7 +46,7 @@ class MethodValidatorTest extends MockeryTestCase
 
         $this->expectException(RequestMalformedException::class);
         $this->expectExceptionMessage('Bad Request');
-        $this->expectExceptionCode(StatusCode::BAD_REQUEST);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $this->schemaValidator->shouldReceive('validate')
             ->with(
@@ -111,7 +111,7 @@ class MethodValidatorTest extends MockeryTestCase
 
         $this->expectException(ResponseMalformedException::class);
         $this->expectExceptionMessage('Internal Server Error');
-        $this->expectExceptionCode(StatusCode::INTERNAL_SERVER_ERROR);
+        $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
         $this->schemaValidator->shouldReceive('validate')
             ->with(

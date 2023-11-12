@@ -9,7 +9,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
@@ -50,7 +50,7 @@ class MethodDispatcherTest extends MockeryTestCase
 
         $this->expectException(MethodNotFoundException::class);
         $this->expectExceptionMessage('Method not found');
-        $this->expectExceptionCode(StatusCode::BAD_REQUEST);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $method = 'some-method';
         $parameter = (object) ['some-parameter'];

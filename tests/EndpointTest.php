@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Dispatch\MethodDispatcherInterface;
 use Usox\JsonSchemaApi\Dispatch\RequestValidatorInterface;
@@ -92,7 +92,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($processedResponse);
 
         $this->responseFactory->shouldReceive('createResponse')
-            ->with(StatusCode::OK)
+            ->with(Http::OK)
             ->once()
             ->andReturn($response);
 
@@ -142,7 +142,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($uuidValue);
 
         $this->responseFactory->shouldReceive('createResponse')
-            ->with(StatusCode::BAD_REQUEST)
+            ->with(Http::BAD_REQUEST)
             ->once()
             ->andReturn($response);
 
@@ -199,7 +199,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($uuidValue);
 
         $this->responseFactory->shouldReceive('createResponse')
-            ->with(StatusCode::BAD_REQUEST)
+            ->with(Http::BAD_REQUEST)
             ->once()
             ->andReturn($response);
 
@@ -249,7 +249,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($uuidValue);
 
         $this->responseFactory->shouldReceive('createResponse')
-            ->with(StatusCode::INTERNAL_SERVER_ERROR)
+            ->with(Http::INTERNAL_SERVER_ERROR)
             ->once()
             ->andReturn($response);
 
@@ -300,7 +300,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($uuidValue);
 
         $this->responseFactory->shouldReceive('createResponse')
-            ->with(StatusCode::INTERNAL_SERVER_ERROR)
+            ->with(Http::INTERNAL_SERVER_ERROR)
             ->once()
             ->andReturn($response);
 
@@ -371,7 +371,7 @@ class EndpointTest extends MockeryTestCase
             ->andReturn($processedResponse);
 
         $this->responseFactory->shouldReceive('createResponse')
-            ->with(StatusCode::OK)
+            ->with(Http::OK)
             ->once()
             ->andReturn($response);
 

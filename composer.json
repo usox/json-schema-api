@@ -19,7 +19,7 @@
     "psr/http-server-handler": "^1.0",
     "psr/log": "^1.1||^3",
     "ramsey/uuid": "^4.1",
-    "shrikeh/teapot": "^2.3"
+    "teapot/status-code": "^1.1"
   },
   "autoload": {
     "psr-4": {

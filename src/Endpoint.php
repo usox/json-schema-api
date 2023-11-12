@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Throwable;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Dispatch\MethodDispatcher;
@@ -52,7 +52,7 @@ final class Endpoint implements
     public function serve(
         ServerRequestInterface $request,
     ): ResponseInterface {
-        $statusCode = StatusCode::OK;
+        $statusCode = Http::OK;
         $responseData = null;
 
         try {
@@ -71,7 +71,7 @@ final class Endpoint implements
             // Build an error response
             $responseData = $this->responseBuilder->buildErrorResponse($e, $uuid);
 
-            $statusCode = StatusCode::BAD_REQUEST;
+            $statusCode = Http::BAD_REQUEST;
         } catch (InternalException $e) {
             $this->logError(
                 $e,
@@ -79,14 +79,14 @@ final class Endpoint implements
                 $e->getContext()
             );
 
-            $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
+            $statusCode = Http::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
             $this->logError(
                 $e,
                 $this->uuidFactory->uuid4()
             );
 
-            $statusCode = StatusCode::INTERNAL_SERVER_ERROR;
+            $statusCode = Http::INTERNAL_SERVER_ERROR;
         }
 
         $response = $this->responseFactory->createResponse($statusCode);

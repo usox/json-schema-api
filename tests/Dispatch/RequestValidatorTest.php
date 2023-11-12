@@ -11,7 +11,7 @@ use Opis\JsonSchema\ValidationResult;
 use Opis\JsonSchema\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Dispatch\Exception\JsonInvalidException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 
@@ -40,7 +40,7 @@ class RequestValidatorTest extends MockeryTestCase
     {
         $this->expectException(JsonInvalidException::class);
         $this->expectExceptionMessage('Input is no valid json (Syntax error)');
-        $this->expectExceptionCode(StatusCode::BAD_REQUEST);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $stream = Mockery::mock(StreamInterface::class);
         $request = Mockery::mock(ServerRequestInterface::class);
@@ -64,7 +64,7 @@ class RequestValidatorTest extends MockeryTestCase
     {
         $this->expectException(RequestMalformedException::class);
         $this->expectExceptionMessage('Request is invalid');
-        $this->expectExceptionCode(StatusCode::BAD_REQUEST);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $stream = Mockery::mock(StreamInterface::class);
         $request = Mockery::mock(ServerRequestInterface::class);

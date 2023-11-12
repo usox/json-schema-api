@@ -7,7 +7,7 @@ namespace Usox\JsonSchemaApi\Dispatch;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use stdClass;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
@@ -65,7 +65,7 @@ final class MethodDispatcher implements MethodDispatcherInterface
         if (!$handler instanceof ApiMethodInterface) {
             throw new MethodNotFoundException(
                 'Method not found',
-                StatusCode::BAD_REQUEST
+                Http::BAD_REQUEST
             );
         }
 

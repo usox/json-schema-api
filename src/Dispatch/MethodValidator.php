@@ -8,7 +8,7 @@ use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Helper;
 use Opis\JsonSchema\Validator;
 use stdClass;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 
@@ -40,7 +40,7 @@ final class MethodValidator implements MethodValidatorInterface
         if (!$validationResult->isValid()) {
             throw new RequestMalformedException(
                 'Bad Request',
-                StatusCode::BAD_REQUEST
+                Http::BAD_REQUEST
             );
         }
     }
@@ -78,7 +78,7 @@ final class MethodValidator implements MethodValidatorInterface
             if ($error !== null) {
                 throw new ResponseMalformedException(
                     'Internal Server Error',
-                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Http::INTERNAL_SERVER_ERROR,
                     null,
                     $this->errorFormatter->format($error)
                 );
