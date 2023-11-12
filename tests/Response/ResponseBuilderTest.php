@@ -11,7 +11,6 @@ use Ramsey\Uuid\UuidInterface;
 
 class ResponseBuilderTest extends MockeryTestCase
 {
-    /** @var ResponseBuilder|null */
     private ResponseBuilder $subject;
 
     public function setUp(): void

@@ -17,10 +17,9 @@ use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 
 class MethodValidatorTest extends MockeryTestCase
 {
-    /** @var Validator|MockInterface */
-    private MockInterface $schemaValidator;
+    private MockInterface&Validator $schemaValidator;
 
-    private MockInterface $errorFormatter;
+    private MockInterface&ErrorFormatter $errorFormatter;
 
     private MethodValidator $subject;
 

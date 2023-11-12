@@ -28,19 +28,19 @@ use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 
 class EndpointTest extends MockeryTestCase
 {
-    private MockInterface $requestValidator;
+    private MockInterface&RequestValidatorInterface $requestValidator;
 
-    private MockInterface $methodDispatcher;
+    private MockInterface&MethodDispatcherInterface $methodDispatcher;
 
-    private MockInterface $responseBuilder;
+    private MockInterface&ResponseBuilderInterface $responseBuilder;
 
-    private MockInterface $uuidFactory;
+    private MockInterface&UuidFactoryInterface $uuidFactory;
 
-    private MockInterface $streamFactory;
+    private MockInterface&StreamFactoryInterface $streamFactory;
 
-    private MockInterface $responseFactory;
+    private MockInterface&ResponseFactoryInterface $responseFactory;
 
-    private MockInterface $logger;
+    private MockInterface&LoggerInterface $logger;
 
     private Endpoint $subject;
 

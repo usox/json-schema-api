@@ -16,16 +16,13 @@ use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 
 class MethodDispatcherTest extends MockeryTestCase
 {
-    /** @var MockInterface|SchemaLoaderInterface */
-    private MockInterface $schemaLoader;
+    private MockInterface&SchemaLoaderInterface $schemaLoader;
 
-    /** @var MethodValidatorInterface|MockInterface */
-    private MockInterface $methodValidator;
+    private MockInterface&MethodValidatorInterface $methodValidator;
 
-    /** @var MethodProviderInterface|MockInterface */
-    private MockInterface $methodProvider;
+    private MockInterface&MethodProviderInterface $methodProvider;
 
-    private MockInterface $logger;
+    private MockInterface&LoggerInterface $logger;
 
     private MethodDispatcher $subject;
 
