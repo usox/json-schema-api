@@ -23,7 +23,7 @@ class RequestValidatorTest extends MockeryTestCase
 
     private RequestValidator $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
         $this->validator = Mockery::mock(Validator::class);
@@ -77,12 +77,8 @@ class RequestValidatorTest extends MockeryTestCase
 
         $this->validator->shouldReceive('validate')
             ->with(
-                Mockery::on(static function ($value) use ($input): bool {
-                    return (array) $value === $input;
-                }),
-                Mockery::on(static function ($value) use ($schemaContent): bool {
-                    return $value == $schemaContent;
-                })
+                Mockery::on(static fn ($value): bool => (array) $value === $input),
+                Mockery::on(static fn ($value): bool => $value == $schemaContent)
             )
             ->once()
             ->andReturn($validationResult);
@@ -120,12 +116,8 @@ class RequestValidatorTest extends MockeryTestCase
 
         $this->validator->shouldReceive('validate')
             ->with(
-                Mockery::on(static function ($value) use ($input): bool {
-                    return (array) $value === $input;
-                }),
-                Mockery::on(static function ($value) use ($schemaContent): bool {
-                    return $value == $schemaContent;
-                })
+                Mockery::on(static fn ($value): bool => (array) $value === $input),
+                Mockery::on(static fn ($value): bool => $value == $schemaContent)
             )
             ->once()
             ->andReturn($validationResult);

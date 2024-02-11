@@ -13,7 +13,7 @@ class ResponseBuilderTest extends MockeryTestCase
 {
     private ResponseBuilder $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new ResponseBuilder();
     }

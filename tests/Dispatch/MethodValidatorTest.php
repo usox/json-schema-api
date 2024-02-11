@@ -23,7 +23,7 @@ class MethodValidatorTest extends MockeryTestCase
 
     private MethodValidator $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->schemaValidator = Mockery::mock(Validator::class);
         $this->errorFormatter = Mockery::mock(ErrorFormatter::class);
@@ -50,9 +50,7 @@ class MethodValidatorTest extends MockeryTestCase
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $parameter,
-                Mockery::on(static function ($value) use ($schemaParameter): bool {
-                    return json_encode($value) === json_encode($schemaParameter);
-                })
+                Mockery::on(static fn ($value): bool => json_encode($value) === json_encode($schemaParameter))
             )
             ->once()
             ->andReturn($validationResult);
@@ -80,9 +78,7 @@ class MethodValidatorTest extends MockeryTestCase
         $this->schemaValidator->shouldReceive('validate')
             ->with(
                 $parameter,
-                Mockery::on(static function ($value) use ($schemaParameter): bool {
-                    return (array) $value === $schemaParameter;
-                })
+                Mockery::on(static fn ($value): bool => (array) $value === $schemaParameter)
             )
             ->once()
             ->andReturn($result);
@@ -114,9 +110,7 @@ class MethodValidatorTest extends MockeryTestCase
 
         $this->schemaValidator->shouldReceive('validate')
             ->with(
-                Mockery::on(static function ($value) use ($output): bool {
-                    return json_encode($value) === json_encode(['data' => $output]);
-                }),
+                Mockery::on(static fn ($value): bool => json_encode($value) === json_encode(['data' => $output])),
                 Mockery::on(static function ($value) use ($schemaParameter): bool {
                     $schemaParameter = [
                         'type' => 'object',
@@ -158,9 +152,7 @@ class MethodValidatorTest extends MockeryTestCase
 
         $this->schemaValidator->shouldReceive('validate')
             ->with(
-                Mockery::on(static function ($value) use ($output): bool {
-                    return json_encode($value) === json_encode(['data' => $output]);
-                }),
+                Mockery::on(static fn ($value): bool => json_encode($value) === json_encode(['data' => $output])),
                 Mockery::on(static function ($value) use ($schemaParameter): bool {
                     $schemaParameter = [
                         'type' => 'object',

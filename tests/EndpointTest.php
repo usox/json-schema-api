@@ -44,7 +44,7 @@ class EndpointTest extends MockeryTestCase
 
     private Endpoint $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->requestValidator = Mockery::mock(RequestValidatorInterface::class);
         $this->methodDispatcher = Mockery::mock(MethodDispatcherInterface::class);

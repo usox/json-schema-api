@@ -140,6 +140,7 @@ final class Endpoint implements
         if ($streamFactory === null) {
             $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
         }
+
         if ($responseFactory === null) {
             $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
         }

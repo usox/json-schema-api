@@ -26,7 +26,7 @@ class MethodDispatcherTest extends MockeryTestCase
 
     private MethodDispatcher $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
         $this->methodValidator = Mockery::mock(MethodValidatorInterface::class);
@@ -109,9 +109,7 @@ class MethodDispatcherTest extends MockeryTestCase
         $this->methodValidator->shouldReceive('validateOutput')
             ->with(
                 $schemaContent,
-                Mockery::on(function ($param) use ($result): bool {
-                    return (array) $param == $result;
-                })
+                Mockery::on(static fn ($param): bool => (array) $param == $result)
             )
             ->once();
 

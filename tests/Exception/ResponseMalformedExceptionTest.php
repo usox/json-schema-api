@@ -13,7 +13,7 @@ class ResponseMalformedExceptionTest extends MockeryTestCase
 
     private ResponseMalformedException $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new ResponseMalformedException(
             '',
