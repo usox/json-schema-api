@@ -39,7 +39,7 @@
     "phpstan/phpstan": "^1",
     "phpstan/phpstan-mockery": "^1",
     "phpstan/phpstan-strict-rules": "^1",
-    "phpunit/phpunit": "^10",
+    "phpunit/phpunit": "^11",
     "rector/rector": "^1"
   },
   "config": {
