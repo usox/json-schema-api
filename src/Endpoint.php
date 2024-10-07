@@ -32,17 +32,17 @@ use Usox\JsonSchemaApi\Response\ResponseBuilderInterface;
 /**
  * @see Endpoint::factory()
  */
-final class Endpoint implements
+final readonly class Endpoint implements
     EndpointInterface
 {
     public function __construct(
-        private readonly RequestValidatorInterface $inputValidator,
-        private readonly MethodDispatcherInterface $methodRetriever,
-        private readonly ResponseBuilderInterface $responseBuilder,
-        private readonly UuidFactoryInterface $uuidFactory,
-        private readonly StreamFactoryInterface $streamFactory,
-        private readonly ResponseFactoryInterface $responseFactory,
-        private readonly ?LoggerInterface $logger = null
+        private RequestValidatorInterface $inputValidator,
+        private MethodDispatcherInterface $methodRetriever,
+        private ResponseBuilderInterface $responseBuilder,
+        private UuidFactoryInterface $uuidFactory,
+        private StreamFactoryInterface $streamFactory,
+        private ResponseFactoryInterface $responseFactory,
+        private ?LoggerInterface $logger = null
     ) {
     }
 

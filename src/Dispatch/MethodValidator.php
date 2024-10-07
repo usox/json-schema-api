@@ -15,11 +15,11 @@ use Usox\JsonSchemaApi\Exception\ResponseMalformedException;
 /**
  * Validates input and output against the json schema to ensure valid requests/responses
  */
-final class MethodValidator implements MethodValidatorInterface
+final readonly class MethodValidator implements MethodValidatorInterface
 {
     public function __construct(
-        private readonly Validator $schemaValidator,
-        private readonly ErrorFormatter $errorFormatter
+        private Validator $schemaValidator,
+        private ErrorFormatter $errorFormatter
     ) {
     }
 

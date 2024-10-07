@@ -17,11 +17,11 @@ use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 /**
  * Validates the request against the basic request schema (method name, parameter)
  */
-final class RequestValidator implements RequestValidatorInterface
+final readonly class RequestValidator implements RequestValidatorInterface
 {
     public function __construct(
-        private readonly SchemaLoaderInterface $schemaLoader,
-        private readonly Validator $schemaValidator,
+        private SchemaLoaderInterface $schemaLoader,
+        private Validator $schemaValidator,
     ) {
     }
 
