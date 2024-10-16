@@ -10,13 +10,12 @@ use Throwable;
 abstract class InternalException extends Exception
 {
     /**
-     * @param Throwable|null $previous
      * @param array<mixed, mixed> $context
      */
     public function __construct(
         string $message,
         int $code,
-        Throwable $previous = null,
+        null|Throwable $previous = null,
         private readonly array $context = []
     ) {
         parent::__construct($message, $code, $previous);
