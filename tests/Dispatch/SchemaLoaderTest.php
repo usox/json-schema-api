@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use Mockery\Adapter\Phpunit\MockeryTestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 
-class SchemaLoaderTest extends MockeryTestCase
+class SchemaLoaderTest extends TestCase
 {
     private SchemaLoader $subject;
 
@@ -27,7 +27,7 @@ class SchemaLoaderTest extends MockeryTestCase
 
         $this->expectException(SchemaNotFoundException::class);
         $this->expectExceptionMessage(
-            sprintf('Schema file `%s` not found', $path)
+            sprintf('Schema file `%s` not found', $path),
         );
         $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
@@ -44,7 +44,7 @@ class SchemaLoaderTest extends MockeryTestCase
 
         $this->expectException(SchemaInvalidException::class);
         $this->expectExceptionMessage(
-            'Schema does not contain valid json (Syntax error)'
+            'Schema does not contain valid json (Syntax error)',
         );
         $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
@@ -76,7 +76,7 @@ class SchemaLoaderTest extends MockeryTestCase
 
         static::assertSame(
             $content,
-            (array) $this->subject->load($path)
+            (array) $this->subject->load($path),
         );
     }
 }

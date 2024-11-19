@@ -42,7 +42,7 @@ final readonly class Endpoint implements
         private UuidFactoryInterface $uuidFactory,
         private StreamFactoryInterface $streamFactory,
         private ResponseFactoryInterface $responseFactory,
-        private ?LoggerInterface $logger = null
+        private ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -60,8 +60,8 @@ final readonly class Endpoint implements
             $responseData = $this->responseBuilder->buildResponse(
                 $this->methodRetriever->dispatch(
                     $request,
-                    $this->inputValidator->validate($request)
-                )
+                    $this->inputValidator->validate($request),
+                ),
             );
         } catch (ApiException $e) {
             $uuid = $this->uuidFactory->uuid4();
@@ -76,14 +76,14 @@ final readonly class Endpoint implements
             $this->logError(
                 $e,
                 $this->uuidFactory->uuid4(),
-                $e->getContext()
+                $e->getContext(),
             );
 
             $statusCode = Http::INTERNAL_SERVER_ERROR;
         } catch (Throwable $e) {
             $this->logError(
                 $e,
-                $this->uuidFactory->uuid4()
+                $this->uuidFactory->uuid4(),
             );
 
             $statusCode = Http::INTERNAL_SERVER_ERROR;
@@ -94,8 +94,8 @@ final readonly class Endpoint implements
         if ($responseData !== null) {
             $response = $response->withBody(
                 $this->streamFactory->createStream(
-                    (string) json_encode($responseData)
-                )
+                    (string) json_encode($responseData),
+                ),
             );
         }
 
@@ -110,7 +110,7 @@ final readonly class Endpoint implements
     private function logError(
         Throwable $e,
         UuidInterface $uuid,
-        array $context = []
+        array $context = [],
     ): void {
         $this->logger?->error(
             sprintf('%s (%d)', $e->getMessage(), $e->getCode()),
@@ -118,8 +118,8 @@ final readonly class Endpoint implements
                 'id' => $uuid->toString(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'context' => $context
-            ]
+                'context' => $context,
+            ],
         );
     }
 
@@ -132,7 +132,7 @@ final readonly class Endpoint implements
         MethodProviderInterface $methodProvider,
         ?StreamFactoryInterface $streamFactory = null,
         ?ResponseFactoryInterface $responseFactory = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
     ): EndpointInterface {
         $schemaValidator = new Validator();
         $schemaLoader = new SchemaLoader();
@@ -148,13 +148,13 @@ final readonly class Endpoint implements
         return new self(
             new RequestValidator(
                 $schemaLoader,
-                $schemaValidator
+                $schemaValidator,
             ),
             new MethodDispatcher(
                 $schemaLoader,
                 new MethodValidator(
                     $schemaValidator,
-                    new ErrorFormatter()
+                    new ErrorFormatter(),
                 ),
                 $methodProvider,
                 $logger,
@@ -163,7 +163,7 @@ final readonly class Endpoint implements
             new UuidFactory(),
             $streamFactory,
             $responseFactory,
-            $logger
+            $logger,
         );
     }
 

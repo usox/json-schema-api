@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Mockery\MockInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Teapot\StatusCode\Http;
@@ -14,36 +13,36 @@ use Usox\JsonSchemaApi\Contract\ApiMethodInterface;
 use Usox\JsonSchemaApi\Contract\MethodProviderInterface;
 use Usox\JsonSchemaApi\Exception\MethodNotFoundException;
 
-class MethodDispatcherTest extends MockeryTestCase
+class MethodDispatcherTest extends TestCase
 {
-    private MockInterface&SchemaLoaderInterface $schemaLoader;
+    private MockObject&SchemaLoaderInterface $schemaLoader;
 
-    private MockInterface&MethodValidatorInterface $methodValidator;
+    private MockObject&MethodValidatorInterface $methodValidator;
 
-    private MockInterface&MethodProviderInterface $methodProvider;
+    private MockObject&MethodProviderInterface $methodProvider;
 
-    private MockInterface&LoggerInterface $logger;
+    private MockObject&LoggerInterface $logger;
 
     private MethodDispatcher $subject;
 
     protected function setUp(): void
     {
-        $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
-        $this->methodValidator = Mockery::mock(MethodValidatorInterface::class);
-        $this->methodProvider = Mockery::mock(MethodProviderInterface::class);
-        $this->logger = Mockery::mock(LoggerInterface::class);
+        $this->schemaLoader = $this->createMock(SchemaLoaderInterface::class);
+        $this->methodValidator = $this->createMock(MethodValidatorInterface::class);
+        $this->methodProvider = $this->createMock(MethodProviderInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->subject = new MethodDispatcher(
             $this->schemaLoader,
             $this->methodValidator,
             $this->methodProvider,
-            $this->logger
+            $this->logger,
         );
     }
 
     public function testDispatchThrowsExceptionIfMethodDoesNotExist(): void
     {
-        $request = Mockery::mock(ServerRequestInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
 
         $this->expectException(MethodNotFoundException::class);
         $this->expectExceptionMessage('Method not found');
@@ -54,24 +53,24 @@ class MethodDispatcherTest extends MockeryTestCase
 
         $input = ['method' => $method, 'parameter' => $parameter];
 
-        $this->methodProvider->shouldReceive('lookup')
+        $this->methodProvider->expects(static::once())
+            ->method('lookup')
             ->with($method)
-            ->once()
-            ->andReturnNull();
+            ->willReturn(null);
 
-        $this->logger->shouldReceive('debug')
+        $this->logger->expects(static::once())
+            ->method('debug')
             ->with(
                 'Api method call',
                 [
                     'method' => $method,
-                    'input' => $parameter
-                ]
-            )
-            ->once();
+                    'input' => $parameter,
+                ],
+            );
 
         $this->subject->dispatch(
             $request,
-            (object) $input
+            (object) $input,
         );
     }
 
@@ -85,60 +84,59 @@ class MethodDispatcherTest extends MockeryTestCase
 
         $input = (object) ['method' => $method, 'parameter' => $parameter];
 
-        $request = Mockery::mock(ServerRequestInterface::class);
-        $handler = Mockery::mock(ApiMethodInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $handler = $this->createMock(ApiMethodInterface::class);
 
-        $handler->shouldReceive('getSchemaFile')
-            ->withNoArgs()
-            ->once()
-            ->andReturn($schemaFilePath);
+        $handler->expects(static::once())
+            ->method('getSchemaFile')
+            ->willReturn($schemaFilePath);
 
-        $this->schemaLoader->shouldReceive('load')
+        $this->schemaLoader->expects(static::once())
+            ->method('load')
             ->with($schemaFilePath)
-            ->once()
-            ->andReturn($schemaContent);
+            ->willReturn($schemaContent);
 
-        $this->methodProvider->shouldReceive('lookup')
+        $this->methodProvider->expects(static::once())
+            ->method('lookup')
             ->with($method)
-            ->once()
-            ->andReturn($handler);
+            ->willReturn($handler);
 
-        $this->methodValidator->shouldReceive('validateInput')
-            ->with($schemaContent, $input)
-            ->once();
-        $this->methodValidator->shouldReceive('validateOutput')
+        $this->methodValidator->expects(static::once())
+            ->method('validateInput')
+            ->with($schemaContent, $input);
+        $this->methodValidator->expects(static::once())
+            ->method('validateOutput')
             ->with(
                 $schemaContent,
-                Mockery::on(static fn ($param): bool => (array) $param == $result)
-            )
-            ->once();
+                $this->callback(static fn ($param): bool => (array) $param == $result),
+            );
 
-        $this->logger->shouldReceive('info')
+        $this->logger->expects(static::once())
+            ->method('info')
             ->with(
                 'Api method call',
                 [
                     'method' => $method,
-                ]
-            )
-            ->once();
-        $this->logger->shouldReceive('debug')
+                ],
+            );
+        $this->logger->expects(static::once())
+            ->method('debug')
             ->with(
                 'Api method call',
                 [
                     'method' => $method,
-                    'input' => $input->parameter
-                ]
-            )
-            ->once();
+                    'input' => $input->parameter,
+                ],
+            );
 
-        $handler->shouldReceive('handle')
+        $handler->expects(static::once())
+            ->method('handle')
             ->with($request, $parameter)
-            ->once()
-            ->andReturn($result);
+            ->willReturn($result);
 
         static::assertSame(
             $result,
-            $this->subject->dispatch($request, $input)
+            $this->subject->dispatch($request, $input),
         );
     }
 }

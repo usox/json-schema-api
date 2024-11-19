@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Usox\JsonSchemaApi\Response;
 
 use Exception;
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 
-class ResponseBuilderTest extends MockeryTestCase
+class ResponseBuilderTest extends TestCase
 {
     private ResponseBuilder $subject;
 
@@ -25,22 +24,21 @@ class ResponseBuilderTest extends MockeryTestCase
         $uuidValue = 'some-uuid';
         $error = new Exception($message, $code);
 
-        $uuid = Mockery::mock(UuidInterface::class);
+        $uuid = $this->createMock(UuidInterface::class);
 
-        $uuid->shouldReceive('toString')
-            ->withNoArgs()
-            ->once()
-            ->andReturn($uuidValue);
+        $uuid->expects(static::once())
+            ->method('toString')
+            ->willReturn($uuidValue);
 
         $this->assertSame(
             [
                 'error' => [
                     'message' => $message,
                     'code' => $code,
-                    'id' => $uuidValue
-                ]
+                    'id' => $uuidValue,
+                ],
             ],
-            $this->subject->buildErrorResponse($error, $uuid)
+            $this->subject->buildErrorResponse($error, $uuid),
         );
     }
 
@@ -50,7 +48,7 @@ class ResponseBuilderTest extends MockeryTestCase
 
         $this->assertSame(
             ['data' => $data],
-            $this->subject->buildResponse($data)
+            $this->subject->buildResponse($data),
         );
     }
 }

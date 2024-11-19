@@ -14,14 +14,14 @@ final class ResponseBuilder implements ResponseBuilderInterface
      */
     public function buildErrorResponse(
         Throwable $e,
-        UuidInterface $uuid
+        UuidInterface $uuid,
     ): array {
         return [
             'error' => [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
-                'id' => $uuid->toString()
-            ]
+                'id' => $uuid->toString(),
+            ],
         ];
     }
 
@@ -33,7 +33,7 @@ final class ResponseBuilder implements ResponseBuilderInterface
     public function buildResponse(array $data): array
     {
         return [
-            'data' => $data
+            'data' => $data,
         ];
     }
 }

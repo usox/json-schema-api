@@ -19,7 +19,7 @@ final readonly class MethodValidator implements MethodValidatorInterface
 {
     public function __construct(
         private Validator $schemaValidator,
-        private ErrorFormatter $errorFormatter
+        private ErrorFormatter $errorFormatter,
     ) {
     }
 
@@ -28,19 +28,19 @@ final readonly class MethodValidator implements MethodValidatorInterface
      */
     public function validateInput(
         stdClass $methodSchemaContent,
-        stdClass $input
+        stdClass $input,
     ): void {
         // Validate the input parameter against the parameter definition in method schema
         $validationResult = $this->schemaValidator->validate(
             $input->parameter,
-            $methodSchemaContent->properties->parameter
+            $methodSchemaContent->properties->parameter,
         );
 
         // Throw exception if the input does not validate against the basic request schema
         if (!$validationResult->isValid()) {
             throw new RequestMalformedException(
                 'Bad Request',
-                Http::BAD_REQUEST
+                Http::BAD_REQUEST,
             );
         }
     }
@@ -52,7 +52,7 @@ final readonly class MethodValidator implements MethodValidatorInterface
      */
     public function validateOutput(
         stdClass $methodSchemaContent,
-        array $output
+        array $output,
     ): void {
         if (property_exists($methodSchemaContent->properties, 'response')) {
             $data = new stdClass();
@@ -64,13 +64,13 @@ final readonly class MethodValidator implements MethodValidatorInterface
                 'properties' => (object) [
                     'data' => $methodSchemaContent->properties->response,
                 ],
-                'required' => ['data']
+                'required' => ['data'],
             ];
 
             // Validate the response against the response definition in method schema
             $validationResult = $this->schemaValidator->validate(
                 $data,
-                $response
+                $response,
             );
 
             $error = $validationResult->error();
@@ -80,7 +80,7 @@ final readonly class MethodValidator implements MethodValidatorInterface
                     'Internal Server Error',
                     Http::INTERNAL_SERVER_ERROR,
                     null,
-                    $this->errorFormatter->format($error)
+                    $this->errorFormatter->format($error),
                 );
             }
         }

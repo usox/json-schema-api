@@ -14,7 +14,7 @@ interface ResponseBuilderInterface
      */
     public function buildErrorResponse(
         Throwable $e,
-        UuidInterface $uuid
+        UuidInterface $uuid,
     ): array;
 
     /**

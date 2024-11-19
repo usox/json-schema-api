@@ -13,7 +13,7 @@ interface MethodValidatorInterface
      */
     public function validateInput(
         stdClass $methodSchemaContent,
-        stdClass $input
+        stdClass $input,
     ): void;
 
     /**
@@ -23,6 +23,6 @@ interface MethodValidatorInterface
      */
     public function validateOutput(
         stdClass $methodSchemaContent,
-        array $output
+        array $output,
     ): void;
 }

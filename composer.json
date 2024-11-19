@@ -35,9 +35,7 @@
     "friendsofphp/php-cs-fixer": "^3.0",
     "laminas/laminas-diactoros": "^3",
     "mikey179/vfsstream": "^1.6",
-    "mockery/mockery": "^1.4",
     "phpstan/phpstan": "^1",
-    "phpstan/phpstan-mockery": "^1",
     "phpstan/phpstan-strict-rules": "^1",
     "phpunit/phpunit": "^11",
     "rector/rector": "^1"

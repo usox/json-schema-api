@@ -31,7 +31,7 @@ final readonly class MethodDispatcher implements MethodDispatcherInterface
         private SchemaLoaderInterface $schemaLoader,
         private MethodValidatorInterface $methodValidator,
         private MethodProviderInterface $methodProvider,
-        private ?LoggerInterface $logger
+        private ?LoggerInterface $logger,
     ) {
     }
 
@@ -48,7 +48,7 @@ final readonly class MethodDispatcher implements MethodDispatcherInterface
      */
     public function dispatch(
         ServerRequestInterface $request,
-        stdClass $input
+        stdClass $input,
     ): array {
         // Get the method from the request and perform lookup
         $methodName = $input->method;
@@ -57,15 +57,15 @@ final readonly class MethodDispatcher implements MethodDispatcherInterface
             'Api method call',
             [
                 'method' => $methodName,
-                'input' => $input->parameter
-            ]
+                'input' => $input->parameter,
+            ],
         );
 
         $handler = $this->methodProvider->lookup($methodName);
         if (!$handler instanceof ApiMethodInterface) {
             throw new MethodNotFoundException(
                 'Method not found',
-                Http::BAD_REQUEST
+                Http::BAD_REQUEST,
             );
         }
 
@@ -77,14 +77,14 @@ final readonly class MethodDispatcher implements MethodDispatcherInterface
             'Api method call',
             [
                 'method' => $methodName,
-            ]
+            ],
         );
 
         $response = $handler->handle($request, $input->parameter);
 
         $this->methodValidator->validateOutput(
             $schemaContent,
-            $response
+            $response,
         );
 
         return $response;

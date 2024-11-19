@@ -4,33 +4,32 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Mockery\MockInterface;
 use Opis\JsonSchema\ValidationResult;
 use Opis\JsonSchema\Validator;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Dispatch\Exception\JsonInvalidException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 
-class RequestValidatorTest extends MockeryTestCase
+class RequestValidatorTest extends TestCase
 {
-    private MockInterface&SchemaLoaderInterface $schemaLoader;
+    private MockObject&SchemaLoaderInterface $schemaLoader;
 
-    private MockInterface&Validator $validator;
+    private MockObject&Validator $validator;
 
     private RequestValidator $subject;
 
     protected function setUp(): void
     {
-        $this->schemaLoader = Mockery::mock(SchemaLoaderInterface::class);
-        $this->validator = Mockery::mock(Validator::class);
+        $this->schemaLoader = $this->createMock(SchemaLoaderInterface::class);
+        $this->validator = $this->createMock(Validator::class);
 
         $this->subject = new RequestValidator(
             $this->schemaLoader,
-            $this->validator
+            $this->validator,
         );
     }
 
@@ -40,20 +39,18 @@ class RequestValidatorTest extends MockeryTestCase
         $this->expectExceptionMessage('Input is no valid json (Syntax error)');
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $stream = Mockery::mock(StreamInterface::class);
-        $request = Mockery::mock(ServerRequestInterface::class);
+        $stream = $this->createMock(StreamInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
 
         $input = 'some-input' . PHP_EOL . 'errors';
 
-        $request->shouldReceive('getBody')
-            ->withNoArgs()
-            ->once()
-            ->andReturn($stream);
+        $request->expects(static::once())
+            ->method('getBody')
+            ->willReturn($stream);
 
-        $stream->shouldReceive('getContents')
-            ->withNoArgs()
-            ->once()
-            ->andReturn($input);
+        $stream->expects(static::once())
+            ->method('getContents')
+            ->willReturn($input);
 
         $this->subject->validate($request);
     }
@@ -64,82 +61,76 @@ class RequestValidatorTest extends MockeryTestCase
         $this->expectExceptionMessage('Request is invalid');
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $stream = Mockery::mock(StreamInterface::class);
-        $request = Mockery::mock(ServerRequestInterface::class);
-        $validationResult = Mockery::mock(ValidationResult::class);
+        $stream = $this->createMock(StreamInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $validationResult = $this->createMock(ValidationResult::class);
 
         $input = ['some' => 'input'];
         $schemaContent = (object) ['some' => 'schema-content'];
 
-        $this->schemaLoader->shouldReceive('load')
-            ->once()
-            ->andReturn($schemaContent);
+        $this->schemaLoader->expects(static::once())
+            ->method('load')
+            ->willReturn($schemaContent);
 
-        $this->validator->shouldReceive('validate')
+        $this->validator->expects(static::once())
+            ->method('validate')
             ->with(
-                Mockery::on(static fn ($value): bool => (array) $value === $input),
-                Mockery::on(static fn ($value): bool => $value == $schemaContent)
+                $this->callback(static fn ($value): bool => (array) $value === $input),
+                $this->callback(static fn ($value): bool => $value == $schemaContent),
             )
-            ->once()
-            ->andReturn($validationResult);
+            ->willReturn($validationResult);
 
-        $validationResult->shouldReceive('isValid')
-            ->withNoArgs()
-            ->once()
-            ->andReturnFalse();
+        $validationResult->expects(static::once())
+            ->method('isValid')
+            ->willReturn(false);
 
-        $request->shouldReceive('getBody')
-            ->withNoArgs()
-            ->once()
-            ->andReturn($stream);
+        $request->expects(static::once())
+            ->method('getBody')
+            ->willReturn($stream);
 
-        $stream->shouldReceive('getContents')
-            ->withNoArgs()
-            ->once()
-            ->andReturn(json_encode($input));
+        $stream->expects(static::once())
+            ->method('getContents')
+            ->willReturn(json_encode($input));
 
         $this->subject->validate($request);
     }
 
     public function testValidateReturnsValidatedInput(): void
     {
-        $stream = Mockery::mock(StreamInterface::class);
-        $request = Mockery::mock(ServerRequestInterface::class);
-        $validationResult = Mockery::mock(ValidationResult::class);
+        $stream = $this->createMock(StreamInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $validationResult = $this->createMock(ValidationResult::class);
 
         $input = ['some' => 'input'];
         $schemaContent = (object) ['some' => 'schema-content'];
 
-        $this->schemaLoader->shouldReceive('load')
-            ->once()
-            ->andReturn($schemaContent);
+        $this->schemaLoader->expects(static::once())
+            ->method('load')
+            ->willReturn($schemaContent);
 
-        $this->validator->shouldReceive('validate')
+        $this->validator->expects(static::once())
+            ->method('validate')
             ->with(
-                Mockery::on(static fn ($value): bool => (array) $value === $input),
-                Mockery::on(static fn ($value): bool => $value == $schemaContent)
+                $this->callback(static fn ($value): bool => (array) $value === $input),
+                $this->callback(static fn ($value): bool => $value == $schemaContent),
             )
-            ->once()
-            ->andReturn($validationResult);
+            ->willReturn($validationResult);
 
-        $validationResult->shouldReceive('isValid')
-            ->withNoArgs()
-            ->once()
-            ->andReturnTrue();
+        $validationResult->expects(static::once())
+            ->method('isValid')
+            ->willReturn(true);
 
-        $request->shouldReceive('getBody')
-            ->withNoArgs()
-            ->once()
-            ->andReturn($stream);
+        $request->expects(static::once())
+            ->method('getBody')
+            ->willReturn($stream);
 
-        $stream->shouldReceive('getContents')
-            ->withNoArgs()
-            ->once()
-            ->andReturn(json_encode($input));
+        $stream->expects(static::once())
+            ->method('getContents')
+            ->willReturn(json_encode($input));
 
         static::assertEquals(
             (object) $input,
-            $this->subject->validate($request)
+            $this->subject->validate($request),
         );
     }
 }

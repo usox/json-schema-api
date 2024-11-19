@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Exception;
 
-use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PHPUnit\Framework\TestCase;
 
-class ResponseMalformedExceptionTest extends MockeryTestCase
+class ResponseMalformedExceptionTest extends TestCase
 {
     /** @var array<string, string> */
     private array $context = ['some' => 'context'];
@@ -19,7 +19,7 @@ class ResponseMalformedExceptionTest extends MockeryTestCase
             '',
             0,
             null,
-            $this->context
+            $this->context,
         );
     }
 
@@ -27,7 +27,7 @@ class ResponseMalformedExceptionTest extends MockeryTestCase
     {
         static::assertSame(
             $this->context,
-            $this->subject->getContext()
+            $this->subject->getContext(),
         );
     }
 }

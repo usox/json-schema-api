@@ -24,7 +24,7 @@ interface ApiMethodInterface
      */
     public function handle(
         ServerRequestInterface $request,
-        object $parameter
+        object $parameter,
     ): array;
 
     /**

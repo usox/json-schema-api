@@ -2,10 +2,10 @@
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
+use stdClass;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
 use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
-use stdClass;
 
 interface SchemaLoaderInterface
 {
@@ -17,6 +17,6 @@ interface SchemaLoaderInterface
      * @throws SchemaNotLoadableException
      */
     public function load(
-        string $schemaFilePath
+        string $schemaFilePath,
     ): stdClass;
 }

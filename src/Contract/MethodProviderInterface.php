@@ -13,6 +13,6 @@ interface MethodProviderInterface
      * @return null|ApiMethodInterface<object, array<mixed>>
      */
     public function lookup(
-        string $methodName
+        string $methodName,
     ): ?ApiMethodInterface;
 }

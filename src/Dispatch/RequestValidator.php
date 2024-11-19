@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Usox\JsonSchemaApi\Dispatch;
 
-use Teapot\StatusCode\Http;
-use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
-use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
-use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 use Opis\JsonSchema\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
+use Teapot\StatusCode\Http;
 use Usox\JsonSchemaApi\Dispatch\Exception\JsonInvalidException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaInvalidException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotFoundException;
+use Usox\JsonSchemaApi\Dispatch\Exception\SchemaNotLoadableException;
 use Usox\JsonSchemaApi\Exception\RequestMalformedException;
 
 /**
@@ -40,7 +40,7 @@ final readonly class RequestValidator implements RequestValidatorInterface
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new JsonInvalidException(
                 sprintf('Input is no valid json (%s)', json_last_error_msg()),
-                Http::BAD_REQUEST
+                Http::BAD_REQUEST,
             );
         }
 
@@ -50,14 +50,14 @@ final readonly class RequestValidator implements RequestValidatorInterface
         // First, validate the input against the basic request schema
         $validationResult = $this->schemaValidator->validate(
             $decodedInput,
-            $fileContent
+            $fileContent,
         );
 
         // Throw exception if the input does not validate against the basic request schema
         if (!$validationResult->isValid()) {
             throw new RequestMalformedException(
                 'Request is invalid',
-                Http::BAD_REQUEST
+                Http::BAD_REQUEST,
             );
         }
 
