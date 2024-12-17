@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": "~8.3",
+    "php": "~8.3||~8.4",
     "ext-json": "*",
     "opis/json-schema": "^2.1",
     "php-http/discovery": "^1.13",
@@ -35,10 +35,10 @@
     "friendsofphp/php-cs-fixer": "^3.0",
     "laminas/laminas-diactoros": "^3",
     "mikey179/vfsstream": "^1.6",
-    "phpstan/phpstan": "^1",
-    "phpstan/phpstan-strict-rules": "^1",
+    "phpstan/phpstan": "^2",
+    "phpstan/phpstan-strict-rules": "^2",
     "phpunit/phpunit": "^11",
-    "rector/rector": "^1"
+    "rector/rector": "^2"
   },
   "config": {
     "sort-packages": true,
